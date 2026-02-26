@@ -26,9 +26,10 @@ SECRET_KEY = 'django-insecure-zhc-ep!26s=9uoj_=&r6i1jp$-a-ru&cr#)mh1jz4e_ip#65pv
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 # Application definition
 
 INSTALLED_APPS = [
