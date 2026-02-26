@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Marks CSV</title>
+    <style>
+        body { font-family: "Segoe UI", sans-serif; background:#f4f4f4; }
+        .container { max-width:700px;margin:30px auto;background:white;padding:20px;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.08);} 
+        h1 { color:#0d47a1 }
+        .btn { padding:10px 16px;background:#0d47a1;color:#fff;border-radius:6px;text-decoration:none;border:none;cursor:pointer }
+        .instructions { background:#f9f9f9;padding:12px;border-radius:6px;margin-bottom:12px }
+        pre { background:#232323;color:#fff;padding:12px;border-radius:6px;overflow:auto }
+        .message { margin-bottom:12px }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Upload Marks CSV</h1>
+        {% if messages %}
+            {% for message in messages %}
+                <div class="message {% if message.tags %}{{ message.tags }}{% endif %}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+
+        <div class="instructions">
+            <p>Upload a CSV file to bulk create or update marks. The CSV must include a header row. Recommended columns:</p>
+            <ul>
+                <li><strong>roll_number</strong> or <strong>student_id</strong> or <strong>email</strong> — used to identify the student</li>
+                <li><strong>subject</strong> — subject name</li>
+                <li><strong>exam_type</strong> — one of: midterm, final, quiz, assignment, project</li>
+                <li><strong>marks_obtained</strong> — numeric</li>
+                <li><strong>total_marks</strong> — numeric (optional, default 100)</li>
+            </ul>
+            <p>Example CSV (comma-separated):</p>
+            <pre>roll_number,subject,exam_type,marks_obtained,total_marks
+R001,Mathematics,midterm,78,100
+R002,Mathematics,midterm,85,100
+</pre>
+        </div>
+
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div>
+                <label for="csv_file">Choose CSV file</label><br>
+                <input type="file" name="csv_file" id="csv_file" accept=".csv" required>
+            </div>
+            <div style="margin-top:12px">
+                <button type="submit" class="btn">Upload</button>
+                <a href="{% url 'marks_list' %}" class="btn" style="background:#777;margin-left:8px">Cancel</a>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

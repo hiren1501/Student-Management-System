@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marks Management</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Segoe UI", sans-serif;
+        }
+        
+        body {
+            background-color: #f4f4f4;
+        }
+        
+        header {
+            background-color: #0d47a1;
+            color: white;
+            padding: 20px 40px;
+        }
+        
+        header h1 {
+            margin-bottom: 10px;
+        }
+        
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 30px;
+        }
+        
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        
+        nav a:hover {
+            color: #ffcc00;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+        
+        h2 {
+            color: #0d47a1;
+            margin-bottom: 20px;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #0d47a1;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .btn:hover {
+            background-color: #ffcc00;
+            color: #0d47a1;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        th {
+            background-color: #0d47a1;
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+        
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        tr:hover {
+            background-color: #f9f9f9;
+        }
+        
+        .actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 0.9rem;
+            text-decoration: none;
+            border-radius: 4px;
+            cursor: pointer;
+            border: none;
+        }
+        
+        .btn-edit {
+            background-color: #4CAF50;
+            color: white;
+        }
+        
+        .btn-delete {
+            background-color: #f44336;
+            color: white;
+        }
+        
+        .btn-small:hover {
+            opacity: 0.8;
+        }
+        
+        .message {
+            padding: 12px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+        
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .no-data {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+        
+        footer {
+            background-color: #0d47a1;
+            color: white;
+            text-align: center;
+            padding: 15px;
+            margin-top: 40px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Marks Management</h1>
+        <nav>
+            <ul>
+                <li><a href="{% url 'faculty_welcome' %}">Dashboard</a></li>
+                <li><a href="{% url 'marks_list' %}">View Marks</a></li>
+                <li><a href="{% url 'login' %}">Logout</a></li>
+            </ul>
+        </nav>
+    </header>
+    
+    <div class="container">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="message {% if message.tags %}{{ message.tags }}{% endif %}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+        
+        <h2>Student Marks</h2>
+        
+        <a href="{% url 'marks_add' %}" class="btn">+ Add Marks</a>
+        
+        
+        {% if marks %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Student Name</th>
+                        <th>Roll Number</th>
+                        <th>Grade</th>
+                        <th>Subject</th>
+                        <th>Exam Type</th>
+                        <th>Marks</th>
+                        <th>Percentage</th>
+                        <th>Date Recorded</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for mark in marks %}
+                        <tr>
+                            <td>{{ mark.student.name }}</td>
+                            <td>{{ mark.student.roll_number }}</td>
+                            <td>{{ mark.student.grade.get_grade_display }}</td>
+                            <td>{{ mark.subject }}</td>
+                            <td>{{ mark.get_exam_type_display }}</td>
+                            <td>{{ mark.marks_obtained }}/{{ mark.total_marks }}</td>
+                            <td>{{ mark.percentage|floatformat:2 }}%</td>
+                            <td>{{ mark.date_recorded|date:"M d, Y H:i" }}</td>
+                            <td>
+                                <div class="actions">
+                                    <a href="{% url 'marks_edit' mark.id %}" class="btn-small btn-edit">Edit</a>
+                                    <a href="{% url 'marks_delete' mark.id %}" class="btn-small btn-delete">Delete</a>
+                                    <a href="{% url 'marks_download' mark.id %}" class="btn-small" style="background:#0d47a1;color:#fff;border-radius:4px;padding:6px 10px;">Download</a>
+                                    <a href="{% url 'marks_email' mark.id %}" class="btn-small" style="background:#1976d2;color:#fff;border-radius:4px;padding:6px 10px;">Email</a>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <div class="no-data">
+                <p>No marks recorded yet. <a href="{% url 'marks_add' %}">Add marks now</a></p>
+            </div>
+        {% endif %}
+    </div>
+    
+    <footer>
+        <p>&copy; 2025 Student Management System. All rights reserved.</p>
+    </footer>
+</body>
+</html>

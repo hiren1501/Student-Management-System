@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Student Registration</title>
+    <style>
+      /* Reset & base */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Segoe UI", sans-serif;
+      }
+
+      body {
+        background: url("https://images.unsplash.com/photo-1541233349642-6e425fe6190e")
+          no-repeat center / cover;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+      }
+
+      /* Form container */
+      .form-box {
+        background: rgba(255, 255, 255, 0.9);
+        padding: 40px 30px;
+        width: 100%;
+        max-width: 700px;
+        border-radius: 12px;
+        box-shadow: 0 15px 25px rgba(0, 0, 0, 0.2);
+      }
+
+      .form-box h2 {
+        text-align: center;
+        margin-bottom: 30px;
+        color: #2c3e50;
+      }
+
+      /* Grid layout */
+      .row {
+        display: flex;
+        gap: 20px;
+        flex-wrap: wrap;
+      }
+
+      .field {
+        flex: 1 1 250px;
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 20px;
+      }
+
+      .field label {
+        margin-bottom: 6px;
+        color: #34495e;
+        font-weight: 600;
+      }
+
+      .field input,
+      .field select,
+      .field textarea {
+        padding: 10px 12px;
+        border: 2px solid #ccc;
+        border-radius: 6px;
+        font-size: 15px;
+        outline: none;
+        transition: border-color 0.3s;
+      }
+
+      .field input:focus,
+      .field select:focus,
+      .field textarea:focus {
+        border-color: #2980b9;
+      }
+
+      .radio-group {
+        display: flex;
+        gap: 15px;
+        padding-top: 8px;
+      }
+
+      .radio-group input {
+        margin-right: 5px;
+      }
+
+      /* Submit button */
+      .btn {
+        width: 100%;
+        padding: 12px;
+        background: #2980b9;
+        border: none;
+        color: #fff;
+        font-size: 17px;
+        font-weight: 600;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background 0.3s;
+      }
+
+      .btn:hover {
+        background: #1f5f8c;
+      }
+
+      /* Responsive tweaks */
+      @media (max-width: 576px) {
+        .row {
+          flex-direction: column;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="form-box">
+      <h2>Student Registration</h2>
+      <form action="#" method="POST">
+        {% csrf_token %}
+        <!-- 1 ▸ Basic Information -->
+        <div class="row">
+          <div class="field">
+            <label for="fname">First Name</label>
+            <input type="text" id="fname" name="first_name" required />
+          </div>
+          <div class="field">
+            <label for="lname">Last Name</label>
+            <input type="text" id="lname" name="last_name" required />
+          </div>
+        </div>
+
+        <!-- 2 ▸ Contact Information -->
+        <div class="row">
+          <div class="field">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" required />
+          </div>
+          <div class="field">
+            <label for="phone">Phone</label>
+            <input
+              type="tel"
+              id="phone"
+              name="phone"
+              pattern="[0-9]{10}"
+              placeholder="10‑digit number"
+              required
+            />
+          </div>
+        </div>
+
+        <!-- 3 ▸ Personal Details -->
+        <div class="row">
+          <div class="field">
+            <label for="dob">Date of Birth</label>
+            <input type="date" id="dob" name="dob" required />
+          </div>
+          <div class="field">
+            <label>Gender</label>
+            <div class="radio-group">
+              <label
+                ><input type="radio" name="gender" value="Male" required />
+                Male</label
+              >
+              <label
+                ><input type="radio" name="gender" value="Female" />
+                Female</label
+              >
+              <label
+                ><input type="radio" name="gender" value="Other" /> Other</label
+              >
+            </div>
+          </div>
+        </div>
+
+        <!-- 4 ▸ Academic Details -->
+        <div class="field">
+          <label for="course">Course</label>
+          <select id="course" name="course" required>
+            <option value="">-- Select Course --</option>
+            <option value="BSc IT">BSc IT</option>
+            <option value="BCA">BCA</option>
+            <option value="MSc CS">MSc CS</option>
+            <option value="MBA">MBA</option>
+          </select>
+        </div>
+
+        <!-- 5 ▸ Address -->
+        <div class="field">
+          <label for="address">Address</label>
+          <textarea id="address" name="address" rows="3" required></textarea>
+        </div>
+
+        <!-- 6 ▸ Security -->
+        <div class="row">
+          <div class="field">
+            <label for="password">Password</label>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              minlength="6"
+              required
+            />
+          </div>
+          <div class="field">
+            <label for="confirmpassword">Confirm Password</label>
+            <input
+              type="password"
+              id="confirmpassword"
+              name="confirmpassword"
+              minlength="6"
+              required
+            />
+          </div>
+        </div>
+
+        <button type="submit" class="btn">Register</button>
+      </form>
+    </div>
+
+    <!-- Optional: simple client‑side password match check -->
+    <script>
+      const form = document.querySelector("form");
+      form.addEventListener("submit", (e) => {
+        const pwd = document.getElementById("password").value;
+        const cpwd = document.getElementById("confirmpassword").value;
+        if (pwd !== cpwd) {
+          alert("Passwords do not match!");
+          e.preventDefault();
+        }
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,76 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Faculty Details</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(120deg, #f8fafc 0%, #e0e7ff 100%);
+            margin: 0;
+            padding: 0;
+        }
+        h1 {
+            text-align: center;
+            color: #3b82f6;
+            margin-top: 40px;
+            font-size: 2.2em;
+            letter-spacing: 1px;
+        }
+        .card {
+            background: #fff;
+            max-width: 400px;
+            margin: 40px auto;
+            padding: 32px 28px;
+            border-radius: 16px;
+            box-shadow: 0 6px 24px rgba(59, 130, 246, 0.08);
+        }
+        .card ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .card li {
+            font-size: 1.1em;
+            color: #374151;
+            margin-bottom: 12px;
+        }
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 18px;
+            color: #3b82f6;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <h1>Faculty Details</h1>
+    <div class="card">
+        <ul>
+            <li><strong>Name:</strong> {{ faculty.name }}</li>
+            <li><strong>Email:</strong> {{ faculty.email }}</li>
+            <li><strong>ID:</strong> {{ faculty.id }}</li>
+            <li><strong>Phone:</strong> {{ faculty.phone|default:"Not provided" }}</li>
+            <li><strong>Date of Birth:</strong> {{ faculty.date_of_birth|default:"Not provided" }}</li>
+            <li><strong>Address:</strong> {{ faculty.address|default:"Not provided" }}</li>
+            <li><strong>Qualification:</strong> {{ faculty.qualification|default:"Not provided" }}</li>
+            <li><strong>Experience Years:</strong> {{ faculty.experience_years }}</li>
+            <li><strong>Grades:</strong> 
+                {% for grade in faculty.grades.all %}
+                    {{ grade.get_grade_display }}{% if not forloop.last %}, {% endif %}
+                {% empty %}
+                    No grades assigned
+                {% endfor %}
+            </li>
+        </ul>
+    </div>
+    <a class="back-link" href="{% url 'faculty_list' %}">Back to List</a>
+</body>
+</html>

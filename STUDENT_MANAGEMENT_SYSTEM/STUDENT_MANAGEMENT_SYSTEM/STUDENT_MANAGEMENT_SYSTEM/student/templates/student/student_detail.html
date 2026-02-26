@@ -1,0 +1,29 @@
+
+<html>
+<head>
+    <title>Student Details</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #f4f4f4; margin: 0; padding: 0; }
+        .container { max-width: 400px; margin: 60px auto; background: #fff; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); padding: 32px; }
+        h2 { color: #2980b9; margin-bottom: 24px; text-align: center; }
+        .detail { margin-bottom: 12px; color: #333; }
+        .back-btn { display: block; margin-top: 18px; color: #2980b9; text-decoration: none; font-weight: bold; text-align: center; }
+        .no-details { color: #c0392b; text-align: center; margin-bottom: 18px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Student Details</h2>
+        {% if student %}
+            <div class="detail"><strong>Name:</strong> {{ student.name }}</div>
+            <div class="detail"><strong>Division:</strong> {{ student.division }}</div>
+            <div class="detail"><strong>Semester:</strong> {{ student.semester }}</div>
+            <div class="detail"><strong>Rollnumber:</strong> {{ student.rollnumber }}</div>
+            <div class="detail"><strong>Address:</strong> {{ student.address }}</div>
+        {% else %}
+            <div class="no-details">No details found for your account.</div>
+        {% endif %}
+        <a href="/admindashboard/" class="back-btn">&#8592; Back to Admin Dashboard</a>
+    </div>
+</body>
+</html>

@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login - Student Management System</title>
+    <link rel="stylesheet" href="login.css" />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Segoe UI", sans-serif;
+      }
+
+      body {
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: linear-gradient(135deg, rgba(13, 71, 161, 0.7) 0%, rgba(21, 101, 192, 0.7) 100%),
+          url("https://images.unsplash.com/photo-1523580494863-6f3031224c94?w=1200&q=80")
+          no-repeat center center/cover;
+        backdrop-filter: blur(2px);
+      }
+
+      .login-container {
+        background-color: white;
+        padding: 40px 30px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        width: 350px;
+        text-align: center;
+      }
+
+      .login-container h2 {
+        margin-bottom: 25px;
+        color: #0d47a1;
+      }
+
+      .input-group {
+        margin-bottom: 20px;
+        text-align: left;
+      }
+
+      .input-group label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+      }
+
+      .input-group input {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+      }
+
+      .login-btn {
+        width: 100%;
+        padding: 12px;
+        background-color: #0d47a1;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: 0.3s;
+      }
+
+      .login-btn:hover {
+        background-color: #1565c0;
+      }
+
+      .register-link {
+        margin-top: 15px;
+        font-size: 0.9rem;
+      }
+
+      .register-link a {
+        color: #0d47a1;
+        text-decoration: none;
+      }
+
+      .register-link a:hover {
+        text-decoration: underline;
+      }
+
+      .error-message {
+        color: #d32f2f;
+        font-size: 0.85rem;
+        margin-top: 5px;
+        display: none;
+      }
+
+      .error-message.show {
+        display: block;
+      }
+
+      .input-group input.error {
+        border-color: #d32f2f;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="login-container">
+      <h2>Login</h2>
+      
+      {% if error %}
+        <div style="padding: 10px; margin-bottom: 15px; background: #ffebee; color: #c62828; border-radius: 5px; border: 1px solid #ef5350;">
+          {{ error }}
+        </div>
+      {% endif %}
+      
+      {% if messages %}
+        {% for message in messages %}
+          <div style="padding: 10px; margin-bottom: 15px; background: {% if message.tags == 'error' %}#ffebee{% else %}#e8f5e9{% endif %}; color: {% if message.tags == 'error' %}#c62828{% else %}#2e7d32{% endif %}; border-radius: 5px; border: 1px solid {% if message.tags == 'error' %}#ef5350{% else %}#66bb6a{% endif %};">
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+      
+      <form method="post" id="loginForm">
+        {% csrf_token %}
+        <div class="input-group">
+          <label for="username">Email or Username</label>
+          <input
+            type="text"  id="username"  name="username" placeholder="Enter your email or username" required />
+          <span class="error-message" id="usernameError"></span>
+        </div>
+        <div class="input-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" required />
+          <span class="error-message" id="passwordError"></span>
+        </div>
+        <button type="submit" class="login-btn">Login</button>
+        <p class="register-link">
+          Don't have an account? <a href="{% url 'register' %}">Register</a>
+        </p>
+      </form>
+    </div>
+
+    <script>
+      const loginForm = document.getElementById('loginForm');
+      const username = document.getElementById('username');
+      const password = document.getElementById('password');
+      const usernameError = document.getElementById('usernameError');
+      const passwordError = document.getElementById('passwordError');
+
+      // Real-time validation
+      username.addEventListener('input', validateUsername);
+      password.addEventListener('input', validatePassword);
+
+      function validateUsername() {
+        const value = username.value.trim();
+        
+        if (value === '') {
+          showError(username, usernameError, 'Email or username is required');
+          return false;
+        } else if (value.length < 3) {
+          showError(username, usernameError, 'Must be at least 3 characters');
+          return false;
+        } else {
+          // Accept both email format and username format
+          const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+          const isUsername = /^[a-zA-Z0-9_@.]+$/.test(value);
+          
+          if (!isEmail && !isUsername) {
+            showError(username, usernameError, 'Enter a valid email or username');
+            return false;
+          }
+          clearError(username, usernameError);
+          return true;
+        }
+      }
+
+      function validatePassword() {
+        const value = password.value;
+        
+        if (value === '') {
+          showError(password, passwordError, 'Password is required');
+          return false;
+        } else if (value.length < 5) {
+          showError(password, passwordError, 'Password must be at least 5 characters');
+          return false;
+        } else {
+          clearError(password, passwordError);
+          return true;
+        }
+      }
+
+      function showError(input, errorElement, message) {
+        input.classList.add('error');
+        errorElement.textContent = message;
+        errorElement.classList.add('show');
+      }
+
+      function clearError(input, errorElement) {
+        input.classList.remove('error');
+        errorElement.textContent = '';
+        errorElement.classList.remove('show');
+      }
+
+      // Form submission validation
+      loginForm.addEventListener('submit', function(e) {
+        const isUsernameValid = validateUsername();
+        const isPasswordValid = validatePassword();
+
+        if (!isUsernameValid || !isPasswordValid) {
+          e.preventDefault();
+          alert('Please fix the errors before submitting');
+        }
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,182 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Attendance Sessions</title>
+    
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Inter", sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: radial-gradient(circle at top, #1a1f36, #0b0f1f);
+            color: #fff;
+            display: flex;
+        }
+
+        /* ========== SIDEBAR ========== */
+        .sidebar {
+            width: 260px;
+            padding: 30px 20px;
+            background: rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(18px);
+            border-right: 1px solid rgba(255,255,255,0.1);
+            position: fixed;
+            height: 100%;
+        }
+
+        .sidebar h2 {
+            text-align: center;
+            font-weight: 700;
+            letter-spacing: 1px;
+            margin-bottom: 40px;
+            background: linear-gradient(90deg, #7f5cff, #00d4ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .sidebar ul {
+            list-style: none;
+        }
+
+        .sidebar ul li {
+            margin: 14px 0;
+        }
+
+        .sidebar ul li a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 16px;
+            border-radius: 14px;
+            color: #cfd3ff;
+            text-decoration: none;
+            transition: 0.4s;
+        }
+
+        .sidebar ul li a:hover {
+            background: linear-gradient(135deg, #7f5cff, #00d4ff);
+            color: #fff;
+            box-shadow: 0 0 20px rgba(127,92,255,0.6);
+            transform: translateX(6px);
+        }
+
+        /* ========== MAIN ========== */
+        .main {
+            margin-left: 260px;
+            padding: 40px;
+            width: 100%;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.07);
+            backdrop-filter: blur(18px);
+            border-radius: 22px;
+            box-shadow: inset 0 0 0 1px rgba(255,255,255,0.08);
+            padding: 40px;
+            text-align: center;
+        }
+
+        h2 {
+            color: #7f5cff;
+            margin-bottom: 30px;
+            font-size: 2.2em;
+            letter-spacing: 1px;
+        }
+
+        .attendance-link {
+            display: inline-block;
+            padding: 14px 32px;
+            background: linear-gradient(135deg, #7f5cff, #00d4ff);
+            color: #fff;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 1.1em;
+            transition: 0.3s;
+            margin: 20px 0;
+        }
+
+        .attendance-link:hover {
+            box-shadow: 0 0 20px rgba(127,92,255,0.6);
+            transform: translateY(-2px);
+        }
+
+        .back-btn {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 24px;
+            background: linear-gradient(135deg, #34495e, #5d6d7e);
+            color: #fff;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+
+        .back-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .info-text {
+            color: #cfd3ff;
+            margin: 20px 0;
+            font-size: 1.05em;
+        }
+
+        /* ========== RESPONSIVE ========== */
+        @media(max-width: 900px) {
+            .sidebar {
+                width: 210px;
+            }
+            .main {
+                margin-left: 210px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h2>ADMIN</h2>
+        <ul>
+            <li><a href="/admindashboard/"><i class="fas fa-chart-line"></i> Dashboard</a></li>
+            <li><a href="{% url 'student_list' %}"><i class="fas fa-user-graduate"></i> Students</a></li>
+            <li><a href="{% url 'student_create' %}"><i class="fas fa-user-plus"></i> Add Student</a></li>
+            <li><a href="{% url 'course_add' %}"><i class="fas fa-book"></i> Subjects</a></li>
+            <li><a href="{% url 'faculty_create' %}"><i class="fas fa-chalkboard-teacher"></i> Faculty</a></li>
+            <li><a href="{% url 'faculty_list' %}"><i class="fas fa-users"></i> Faculties</a></li>
+            <li><a href="{% url 'student_fees_list' %}"><i class="fas fa-money-bill-wave"></i> Student Fees</a></li>
+            <li><a href="{% url 'attendance_list' %}"><i class="fas fa-calendar-check"></i> Attendance</a></li>
+            <li><a href="{% url 'timetable' %}"><i class="fas fa-clock"></i> Timetable</a></li>
+            <li><a href="{% url 'login' %}"><i class="fas fa-right-from-bracket"></i> Logout</a></li>
+        </ul>
+    </div>
+
+    <div class="main">
+        <div class="container">
+            <h2>Attendance Management</h2>
+            <p class="info-text">Click the button below to manage student attendance records</p>
+            <a href="https://docs.google.com/spreadsheets/d/1XUFlzReXJmoNCLYeW6f2PCeE-rnX7_6f/edit?usp=drivesdk&ouid=115182135121219205516&rtpof=true&sd=true" class="attendance-link" target="_blank">
+                <i class="fas fa-external-link-alt"></i> Manage Attendance
+            </a>
+            <br>
+            <a href="{% url 'admin' %}" class="back-btn">Back to Dashboard</a>
+        </div>
+    </div>
+</body>
+</html>

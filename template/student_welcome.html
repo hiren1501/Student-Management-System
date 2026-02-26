@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+    {% load static %}
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Student Portal</title>
+    <link rel="stylesheet" href="/static/css/style.css" />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Segoe UI", sans-serif;
+      }
+
+      body {
+        background: linear-gradient(135deg, rgba(244, 244, 244, 0.95) 0%, rgba(255, 255, 255, 0.95) 100%),
+          url('https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=1200&q=80') no-repeat fixed center center/cover;
+        color: #333;
+      }
+
+      header {
+        background-color: #0d47a1;
+        color: white;
+        padding: 20px 40px;
+        text-align: center;
+      }
+
+      header h1 {
+        margin-bottom: 10px;
+      }
+
+      nav ul {
+        list-style: none;
+        display: flex;
+        justify-content: center;
+        gap: 30px;
+      }
+
+      nav a {
+        color: white;
+        text-decoration: none;
+        font-weight: bold;
+        transition: 0.3s;
+      }
+
+      nav a:hover {
+        text-decoration: underline;
+        color: #ffcc00;
+      }
+
+    .hero {
+        background: linear-gradient(135deg, rgba(13, 71, 161, 0.6) 0%, rgba(21, 101, 192, 0.6) 100%),
+          url('https://www.istockphoto.com/photo/high-school-students-moving-around-in-classroom-during-break-time-gm2212534622-629467047?utm_source=unsplash&utm_medium=affiliate&utm_campaign=adp_photos_sponsored&utm_content=https%3A%2F%2Funsplash.com%2Fphotos%2Fman-and-woman-sitting-on-chairs-zFSo6bnZJTw&utm_term=school%3A%3A%3A%3Af65e5bdb-e6b6-47dd-8fcd-2537d17e83de://images.unsplash.com/photo-1427504494785-cddb143ad4c4?w=1200&q=80') no-repeat center center/cover;
+        height: 80vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        text-align: center;
+      }
+
+      .hero-content {
+        background-color: rgba(0, 0, 0, 0.6);
+        padding: 40px;
+        border-radius: 10px;
+      }
+
+      .hero-content h2 {
+        font-size: 2.5rem;
+        margin-bottom: 20px;
+      }
+
+      .hero-content p {
+        font-size: 1.2rem;
+        margin-bottom: 30px;
+      }
+
+      .btn {
+        padding: 12px 24px;
+        background-color: #ffcc00;
+        color: black;
+        text-decoration: none;
+        font-weight: bold;
+        border-radius: 5px;
+        transition: 0.3s;
+      }
+
+      .btn:hover {
+        background-color: #ffaa00;
+      }
+
+      footer {
+        background-color: #0d47a1;
+        color: white;
+        text-align: center;
+        padding: 15px;
+      }
+
+      /* Add this to existing CSS */
+
+      .header-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 40px;
+      }
+
+      .login-btn {
+        background-color: #ffcc00;
+        color: black;
+        padding: 8px 16px;
+        border-radius: 5px;
+        text-decoration: none;
+        font-weight: bold;
+        transition: 0.3s;
+      }
+
+      .login-btn:hover {
+        background-color: #ffaa00;
+        color: white;
+      }
+    </style>
+  </head>
+  <body>
+    {% csrf_token %}
+    <header>
+      <div class="header-container">
+        <h1>Student Portal</h1>
+      </div>
+      <nav>
+        <ul>
+          <li><a href="{% url 'login' %}">Logout</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <section class="hero">
+      <div class="hero-content">
+        <h2>Welcome to Your Student Dashboard</h2>
+        <p>Access your grades, attendance, and academic progress</p>
+      </div>
+    </section>
+
+    <section class="student-details">
+      <div class="details-container">
+        <h2>Your Profile</h2>
+        <div class="details-card">
+          <div class="detail-item">
+            <label>First Name:</label>
+            <span>{{ student.first_name }}</span>
+          </div>
+          <div class="detail-item">
+            <label>Last Name:</label>
+            <span>{{ student.last_name }}</span>
+          </div>
+          <div class="detail-item">
+            <label>Email:</label>
+            <span>{{ student.email }}</span>
+          </div>
+          <div class="detail-item">
+            <label>Phone:</label>
+            <span>{{ student.phone }}</span>
+          </div>
+          <div class="detail-item">
+            <label>Date of Birth:</label>
+            <span>{{ student.dob }}</span>
+          </div>
+          <div class="detail-item">
+            <label>Gender:</label>
+            <span>{{ student.get_gender_display }}</span>
+          </div>
+          <!--<div class="detail-item">
+            <label>Course:</label>
+            <span>{{ student.get_course_display }}</span>
+          </div>-->
+          <div class="detail-item">
+            <label>Address:</label>
+            <span>{{ student.address }}</span>
+          </div>
+        </div>
+        <div style="margin-top: 25px; text-align: center;">
+          <a href="{% url 'student_edit_profile' %}" class="edit-btn">Edit Profile</a>
+        </div>
+      </div>
+    </section>
+
+    <style>
+      .student-details {
+        max-width: 600px;
+        margin: 40px auto 0 auto;
+        padding: 30px 20px 60px 20px;
+      }
+      .details-container {
+        background-color: #f9f9f9;
+        padding: 30px;
+      }
+      .details-container h2 {
+        text-align: center;
+        color: #0d47a1;
+        margin-bottom: 30px;
+        font-size: 1.8rem;
+      }
+      .details-card {
+        background: #fff;
+        border-radius: 8px;
+        border: 1px solid #ddd;
+        padding: 25px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      }
+      .detail-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 15px 0;
+        border-bottom: 1px solid #eee;
+      }
+      .detail-item:last-child {
+        border-bottom: none;
+      }
+      .detail-item label {
+        font-weight: bold;
+        color: #0d47a1;
+        min-width: 120px;
+      }
+      .detail-item span {
+        color: #333;
+        text-align: right;
+        flex: 1;
+        padding-left: 20px;
+      }
+      .edit-btn {
+        display: inline-block;
+        background-color: #0d47a1;
+        color: white;
+        padding: 12px 30px;
+        text-decoration: none;
+        font-weight: bold;
+        border-radius: 5px;
+        transition: 0.3s;
+        cursor: pointer;
+      }
+      .edit-btn:hover {
+        background-color: #0a3d91;
+        box-shadow: 0 2px 8px rgba(13, 71, 161, 0.3);
+      }
+    </style>
+
+    
+
+    <footer>
+      <p>&copy; 2025 Student Management System. All rights reserved.</p>
+    </footer>
+  </body>
+</html>

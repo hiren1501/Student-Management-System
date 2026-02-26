@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delete Subject</title>
+    
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Inter", sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: radial-gradient(circle at top, #1a1f36, #0b0f1f);
+            color: #fff;
+            display: flex;
+        }
+
+        /* ========== SIDEBAR ========== */
+        .sidebar {
+            width: 260px;
+            padding: 30px 20px;
+            background: rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(18px);
+            border-right: 1px solid rgba(255,255,255,0.1);
+            position: fixed;
+            height: 100%;
+        }
+
+        .sidebar h2 {
+            text-align: center;
+            font-weight: 700;
+            letter-spacing: 1px;
+            margin-bottom: 40px;
+            background: linear-gradient(90deg, #7f5cff, #00d4ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .sidebar ul {
+            list-style: none;
+        }
+
+        .sidebar ul li {
+            margin: 14px 0;
+        }
+
+        .sidebar ul li a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 16px;
+            border-radius: 14px;
+            color: #cfd3ff;
+            text-decoration: none;
+            transition: 0.4s;
+        }
+
+        .sidebar ul li a:hover {
+            background: linear-gradient(135deg, #7f5cff, #00d4ff);
+            color: #fff;
+            box-shadow: 0 0 20px rgba(127,92,255,0.6);
+            transform: translateX(6px);
+        }
+
+        /* ========== MAIN ========== */
+        .main {
+            margin-left: 260px;
+            padding: 40px;
+            width: 100%;
+        }
+
+        h1 {
+            text-align: center;
+            color: #e74c3c;
+            margin-bottom: 30px;
+            font-size: 2em;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.07);
+            backdrop-filter: blur(18px);
+            border-radius: 22px;
+            box-shadow: inset 0 0 0 1px rgba(255,255,255,0.08);
+            padding: 32px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .warning-text {
+            font-size: 1.1rem;
+            color: #cfd3ff;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .subject-info {
+            width: 100%;
+            padding: 20px;
+            background: rgba(231, 76, 60, 0.1);
+            border: 1px solid rgba(231, 76, 60, 0.3);
+            border-radius: 12px;
+            color: #ff6b6b;
+        }
+
+        .subject-info p {
+            margin: 8px 0;
+            font-size: 1rem;
+        }
+
+        .subject-info strong {
+            color: #e74c3c;
+        }
+
+        input[type="submit"] {
+            background: linear-gradient(135deg, #e74c3c, #ec7063);
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            padding: 12px 40px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        input[type="submit"]:hover {
+            box-shadow: 0 0 20px rgba(231,76,60,0.6);
+            transform: translateY(-2px);
+        }
+
+        .links-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .links-container a {
+            display: block;
+            color: #7f5cff;
+            text-decoration: none;
+            font-weight: bold;
+            text-align: center;
+            padding: 8px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .links-container a:hover {
+            color: #00d4ff;
+            text-decoration: underline;
+        }
+
+        .messages-container {
+            max-width: 600px;
+            margin: 20px auto;
+            width: 100%;
+        }
+
+        .message {
+            padding: 12px 16px;
+            margin: 10px 0;
+            border-radius: 10px;
+            font-weight: 500;
+        }
+
+        .message.success {
+            background: rgba(46, 204, 113, 0.2);
+            color: #2ecc71;
+            border: 1px solid rgba(46, 204, 113, 0.3);
+        }
+
+        .message.error {
+            background: rgba(231, 76, 60, 0.2);
+            color: #e74c3c;
+            border: 1px solid rgba(231, 76, 60, 0.3);
+        }
+
+        /* ========== RESPONSIVE ========== */
+        @media(max-width: 900px) {
+            .sidebar {
+                width: 210px;
+            }
+            .main {
+                margin-left: 210px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 1.5em;
+                margin-bottom: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="sidebar">
+        <h2>ADMIN</h2>
+        <ul>
+            <li><a href="/admindashboard/"><i class="fas fa-chart-line"></i> Dashboard</a></li>
+            <li><a href="{% url 'student_list' %}"><i class="fas fa-user-graduate"></i> Students</a></li>
+            <li><a href="{% url 'student_create' %}"><i class="fas fa-user-plus"></i> Add Student</a></li>
+            <li><a href="{% url 'course_add' %}"><i class="fas fa-book"></i> Subjects</a></li>
+            <li><a href="{% url 'faculty_create' %}"><i class="fas fa-chalkboard-teacher"></i> Faculty</a></li>
+            <li><a href="{% url 'faculty_list' %}"><i class="fas fa-users"></i> Faculties</a></li>
+            <li><a href="{% url 'student_fees_list' %}"><i class="fas fa-money-bill-wave"></i> Student Fees</a></li>
+            <li><a href="{% url 'attendance_list' %}"><i class="fas fa-calendar-check"></i> Attendance</a></li>
+            <li><a href="{% url 'timetable' %}"><i class="fas fa-clock"></i> Timetable</a></li>
+            <li><a href="{% url 'login' %}"><i class="fas fa-right-from-bracket"></i> Logout</a></li>
+        </ul>
+    </div>
+
+    <div class="main">
+        <h1>Delete Subject</h1>
+        
+        {% if messages %}
+            <div class="messages-container">
+                {% for message in messages %}
+                    <div class="message {% if message.tags == 'error' %}error{% else %}success{% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <div class="container">
+            <form action="" method="POST">
+                {% csrf_token %}
+                <p class="warning-text">⚠️ Are you sure you want to delete this subject?</p>
+                
+                <div class="subject-info">
+                    <p><strong>Subject ID:</strong> {{ course.subject_id }}</p>
+                    <p><strong>Subject Name:</strong> {{ course.subject_name }}</p>
+                    <p><strong>Faculty Name:</strong> {{ course.faculty_name }}</p>
+                </div>
+
+                <input type="submit" value="Confirm Delete">
+            </form>
+
+            <div class="links-container">
+                <a href="{% url 'course_view' %}">← Cancel - Back to Subject List</a>
+                <a href="{% url 'admin' %}">← Back to Dashboard</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

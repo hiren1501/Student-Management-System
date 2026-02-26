@@ -1,0 +1,323 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% if faculty %}Edit Faculty{% else %}Add Faculty{% endif %}</title>
+    
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Inter", sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: radial-gradient(circle at top, #1a1f36, #0b0f1f);
+            color: #fff;
+            display: flex;
+        }
+
+        /* ========== SIDEBAR ========== */
+        .sidebar {
+            width: 260px;
+            padding: 30px 20px;
+            background: rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(18px);
+            border-right: 1px solid rgba(255,255,255,0.1);
+            position: fixed;
+            height: 100%;
+        }
+
+        .sidebar h2 {
+            text-align: center;
+            font-weight: 700;
+            letter-spacing: 1px;
+            margin-bottom: 40px;
+            background: linear-gradient(90deg, #7f5cff, #00d4ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .sidebar ul {
+            list-style: none;
+        }
+
+        .sidebar ul li {
+            margin: 14px 0;
+        }
+
+        .sidebar ul li a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 16px;
+            border-radius: 14px;
+            color: #cfd3ff;
+            text-decoration: none;
+            transition: 0.4s;
+        }
+
+        .sidebar ul li a:hover {
+            background: linear-gradient(135deg, #7f5cff, #00d4ff);
+            color: #fff;
+            box-shadow: 0 0 20px rgba(127,92,255,0.6);
+            transform: translateX(6px);
+        }
+
+        /* ========== MAIN ========== */
+        .main {
+            margin-left: 260px;
+            padding: 40px;
+            width: 100%;
+        }
+
+        h1 {
+            text-align: center;
+            color: #7f5cff;
+            margin-bottom: 30px;
+            font-size: 2em;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.07);
+            backdrop-filter: blur(18px);
+            border-radius: 22px;
+            box-shadow: inset 0 0 0 1px rgba(255,255,255,0.08);
+            padding: 32px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        label {
+            font-weight: 500;
+            color: #cfd3ff;
+            margin-bottom: 4px;
+            display: block;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="number"],
+        input[type="date"],
+        textarea,
+        select {
+            padding: 10px 12px;
+            border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            font-size: 1rem;
+            width: 100%;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+            outline: none;
+            font-family: inherit;
+        }
+
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        input[type="number"]:focus,
+        input[type="date"]:focus,
+        textarea:focus,
+        select:focus {
+            border-color: #7f5cff;
+            box-shadow: 0 0 10px rgba(127,92,255,0.3);
+        }
+
+        input::placeholder,
+        textarea::placeholder {
+            color: rgba(255,255,255,0.4);
+        }
+
+        input[readonly] {
+            background: rgba(255, 255, 255, 0.05);
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        select[multiple] {
+            min-height: 150px;
+            padding: 10px;
+        }
+
+        select[multiple] option {
+            padding: 8px;
+            border-radius: 4px;
+            margin: 2px 0;
+        }
+
+        select[multiple] option:checked {
+            background: linear-gradient(135deg, #7f5cff, #00d4ff);
+            color: #fff;
+        }
+
+        small {
+            display: block;
+            margin-top: 6px;
+            font-size: 0.85em;
+            color: #9fb0c6;
+            line-height: 1.5;
+        }
+
+        input[type="submit"] {
+            background: linear-gradient(135deg, #7f5cff, #00d4ff);
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            padding: 12px 0;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 8px;
+            transition: all 0.3s ease;
+        }
+
+        input[type="submit"]:hover {
+            box-shadow: 0 0 20px rgba(127,92,255,0.6);
+            transform: translateY(-2px);
+        }
+
+        input[type="submit"]:active {
+            transform: translateY(0);
+        }
+
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 12px;
+            color: #7f5cff;
+            text-decoration: none;
+            font-weight: bold;
+            padding: 8px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .back-link:hover {
+            color: #00d4ff;
+            text-decoration: underline;
+        }
+
+        /* ========== RESPONSIVE ========== */
+        @media(max-width: 900px) {
+            .sidebar {
+                width: 210px;
+            }
+            .main {
+                margin-left: 210px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 1.5em;
+                margin-bottom: 20px;
+            }
+
+            select[multiple] {
+                min-height: 120px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h2>ADMIN</h2>
+        <ul>
+            <li><a href="/admindashboard/"><i class="fas fa-chart-line"></i> Dashboard</a></li>
+            <li><a href="{% url 'student_list' %}"><i class="fas fa-user-graduate"></i> Students</a></li>
+            <li><a href="{% url 'student_create' %}"><i class="fas fa-user-plus"></i> Add Student</a></li>
+            <li><a href="{% url 'course_add' %}"><i class="fas fa-book"></i> Subjects</a></li>
+            <li><a href="{% url 'faculty_create' %}"><i class="fas fa-chalkboard-teacher"></i> Faculty</a></li>
+            <li><a href="{% url 'faculty_list' %}"><i class="fas fa-users"></i> Faculties</a></li>
+            <li><a href="{% url 'student_fees_list' %}"><i class="fas fa-money-bill-wave"></i> Student Fees</a></li>
+            <li><a href="{% url 'attendance_list' %}"><i class="fas fa-calendar-check"></i> Attendance</a></li>
+            <li><a href="{% url 'timetable' %}"><i class="fas fa-clock"></i> Timetable</a></li>
+            <li><a href="{% url 'login' %}"><i class="fas fa-right-from-bracket"></i> Logout</a></li>
+        </ul>
+    </div>
+
+    <div class="main">
+        <h1>{% if faculty %}Edit Faculty{% else %}Add Faculty{% endif %}</h1>
+        <div class="container">
+            <form method="post">
+                {% csrf_token %}
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" value="{{ faculty.name|default:'' }}" placeholder="Enter Faculty Name" required>
+
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" value="{{ faculty.email|default:'' }}" placeholder="Enter Email Address" required>
+
+                <label for="id">Faculty ID:</label>
+                {% if faculty %}
+                    <input type="text" id="id" name="id" value="{{ faculty.id }}" readonly>
+                    <input type="hidden" name="id" value="{{ faculty.id }}">
+                {% else %}
+                    <input type="text" id="id" name="id" value="{{ faculty.id|default:'' }}" placeholder="Enter Faculty ID" required>
+                {% endif %}
+
+                <label for="phone">Phone:</label>
+                <input type="text" id="phone" name="phone" value="{{ faculty.phone|default:'' }}" placeholder="Enter Phone Number">
+
+                <label for="date_of_birth">Date of Birth:</label>
+                <input type="date" id="date_of_birth" name="date_of_birth" value="{{ faculty.date_of_birth|default:'' }}">
+
+                <label for="address">Address:</label>
+                <textarea id="address" name="address" placeholder="Enter Address">{{ faculty.address|default:'' }}</textarea>
+
+                <label for="qualification">Qualification:</label>
+                <input type="text" id="qualification" name="qualification" value="{{ faculty.qualification|default:'' }}" placeholder="e.g., M.Tech, B.Tech">
+
+                <label for="experience_years">Experience Years:</label>
+                <input type="number" id="experience_years" name="experience_years" value="{{ faculty.experience_years|default:0 }}" min="0">
+
+                <label for="grades">Assign Grades/Classes (Select one or more):</label>
+                <select id="grades" name="grades" multiple>
+                    {% for grade in grades %}
+                        <option value="{{ grade.id }}" {% if faculty and grade in faculty.grades.all %}selected{% endif %}>
+                            {{ grade.get_grade_display }}
+                        </option>
+                    {% endfor %}
+                </select>
+                <small>
+                    <strong>ℹ️ How to select:</strong><br>
+                    • Click on a grade to select it<br>
+                    • Hold <strong>Ctrl</strong> (Windows) or <strong>Cmd</strong> (Mac) and click to select multiple grades<br>
+                    • Selected grades appear highlighted in blue<br>
+                    • The faculty will be able to manage marks only for students in these assigned grades
+                </small>
+
+                <input type="submit" value="{% if faculty %}Update Faculty{% else %}Add Faculty{% endif %}">
+            </form>
+
+            <a class="back-link" href="{% url 'faculty_list' %}">← Back to Faculty List</a>
+            <a class="back-link" href="{% url 'admin' %}">← Back to Dashboard</a>
+        </div>
+    </div>
+</body>
+</html>

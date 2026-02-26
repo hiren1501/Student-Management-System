@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login - Student Management System</title>
+    <link rel="stylesheet" href="login.css" />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Segoe UI", sans-serif;
+      }
+
+      body {
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: url("https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&w=1350&q=80")
+          no-repeat center center/cover;
+        backdrop-filter: blur(2px);
+      }
+
+      .login-container {
+        background-color: white;
+        padding: 40px 30px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        width: 350px;
+        text-align: center;
+      }
+
+      .login-container h2 {
+        margin-bottom: 25px;
+        color: #0d47a1;
+      }
+
+      .input-group {
+        margin-bottom: 20px;
+        text-align: left;
+      }
+
+      .input-group label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+      }
+
+      .input-group input {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+      }
+
+      .login-btn {
+        width: 100%;
+        padding: 12px;
+        background-color: #0d47a1;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: 0.3s;
+      }
+
+      .login-btn:hover {
+        background-color: #1565c0;
+      }
+
+      .register-link {
+        margin-top: 15px;
+        font-size: 0.9rem;
+      }
+
+      .register-link a {
+        color: #0d47a1;
+        text-decoration: none;
+      }
+
+      .register-link a:hover {
+        text-decoration: underline;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="login-container">
+      <h2>Login</h2>
+      <form method="post">
+        {% csrf_token %}
+        <div class="input-group">
+          <label for="username">Username</label>
+          <input
+            type="text"  id="username"  name="username" placeholder="enter the Username" required />
+        </div>
+        <div class="input-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" required />
+        </div>
+        <button type="submit" class="login-btn">Login</button>
+        <p class="register-link">
+          Don't have an account? <a href="{% url 'register' %}">Register</a>
+        </p>
+      </form>
+    </div>
+  </body>
+</html>

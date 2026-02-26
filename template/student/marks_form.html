@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Marks</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Segoe UI", sans-serif;
+        }
+        
+        body {
+            background-color: #f4f4f4;
+        }
+        
+        header {
+            background-color: #0d47a1;
+            color: white;
+            padding: 20px 40px;
+        }
+        
+        header h1 {
+            margin-bottom: 10px;
+        }
+        
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 30px;
+        }
+        
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        
+        nav a:hover {
+            color: #ffcc00;
+        }
+        
+        .container {
+            max-width: 600px;
+            margin: 30px auto;
+            padding: 0 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            padding: 30px;
+        }
+        
+        h2 {
+            color: #0d47a1;
+            margin-bottom: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: #0d47a1;
+            box-shadow: 0 0 5px rgba(13, 71, 161, 0.3);
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            background-color: #0d47a1;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            margin-top: 10px;
+        }
+        
+        .btn:hover {
+            background-color: #ffcc00;
+            color: #0d47a1;
+        }
+        
+        .btn-cancel {
+            background-color: #999;
+            margin-left: 10px;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .btn-cancel:hover {
+            background-color: #777;
+        }
+        
+        .message {
+            padding: 12px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+        
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        footer {
+            background-color: #0d47a1;
+            color: white;
+            text-align: center;
+            padding: 15px;
+            margin-top: 40px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Add Student Marks</h1>
+        <nav>
+            <ul>
+                <li><a href="{% url 'faculty_welcome' %}">Dashboard</a></li>
+                <li><a href="{% url 'marks_list' %}">View Marks</a></li>
+                <li><a href="{% url 'login' %}">Logout</a></li>
+            </ul>
+        </nav>
+    </header>
+    
+    <div class="container">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="message {% if message.tags %}{{ message.tags }}{% endif %}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+        
+        <h2>Add Marks for Student</h2>
+        
+        <form method="POST">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label for="student">Select Student:</label>
+                <select id="student" name="student" required>
+                    <option value="">-- Select Student --</option>
+                    {% for st in student_options %}
+                        <option value="{{ st.id }}">{{ st.name }}{% if st.roll %} ({{ st.roll }}){% endif %} - {{ st.grade }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="subject">Subject:</label>
+                <input type="text" id="subject" name="subject" placeholder="e.g., Mathematics, English" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="exam_type">Exam Type:</label>
+                <select id="exam_type" name="exam_type" required>
+                    <option value="">-- Select Exam Type --</option>
+                    {% for value, label in exam_types %}
+                        <option value="{{ value }}">{{ label }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="marks_obtained">Marks Obtained:</label>
+                <input type="number" id="marks_obtained" name="marks_obtained" step="0.01" placeholder="0.00" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="total_marks">Total Marks:</label>
+                <input type="number" id="total_marks" name="total_marks" step="0.01" value="100" placeholder="100" required>
+            </div>
+            
+            <button type="submit" class="btn">Add Marks</button>
+            <a href="{% url 'marks_list' %}" class="btn btn-cancel">Cancel</a>
+        </form>
+    </div>
+    
+    <footer>
+        <p>&copy; 2025 Student Management System. All rights reserved.</p>
+    </footer>
+    <script>
+        // If the view redirected back with ?download=<id>, open the download in a new tab
+        (function(){
+            try {
+                const params = new URLSearchParams(window.location.search);
+                const id = params.get('download');
+                if (id) {
+                    // Open download endpoint in a new tab without navigating away from the form
+                    const url = window.location.origin + '/marks/' + encodeURIComponent(id) + '/download/';
+                    window.open(url, '_blank');
+
+                    // Remove the query param from the URL so refresh doesn't re-trigger
+                    if (window.history && window.history.replaceState) {
+                        const newUrl = window.location.pathname;
+                        window.history.replaceState({}, document.title, newUrl);
+                    }
+                }
+            } catch (e) {
+                console.warn('Auto-download script error', e);
+            }
+        })();
+    </script>
+</body>
+</html>

@@ -1,0 +1,56 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Mark Attendance</title>
+    <style>body{font-family:Segoe UI, sans-serif;padding:20px}</style>
+</head>
+<body>
+    <h2>Mark Attendance</h2>
+    <form method="post">
+        {% csrf_token %}
+        <label>Grade:</label>
+        <select name="grade" required>
+            {% for g in grades %}
+            <option value="{{ g.pk }}">{{ g.get_grade_display }}</option>
+            {% endfor %}
+        </select>
+        <label>Stream (optional for 11-12):</label>
+        <select name="stream">
+            <option value="">-- None --</option>
+            {% for s in streams %}
+            <option value="{{ s.pk }}">{{ s.get_name_display }}</option>
+            {% endfor %}
+        </select>
+        <label>Date:</label>
+        <input type="date" name="date" value="{{ today|default:None }}">
+        <button type="submit" formaction="">Load Students / Submit</button>
+    </form>
+
+    {% if request.method == 'POST' or students %}
+    <!-- If students list is present, show checkboxes -->
+    {% if students %}
+    <form method="post">
+        {% csrf_token %}
+        <input type="hidden" name="grade" value="{{ selected_grade.pk }}">
+        <input type="hidden" name="stream" value="{{ selected_stream.pk if selected_stream }}">
+        <input type="hidden" name="date" value="{{ selected_date }}">
+        <table border="1" cellpadding="6">
+            <tr><th>Roll</th><th>Name</th><th>Present</th></tr>
+            {% for s in students %}
+            <tr>
+                <td>{{ s.roll_number }}</td>
+                <td>{{ s.name }}</td>
+                <td><input type="checkbox" name="present" value="{{ s.pk }}" checked></td>
+            </tr>
+            {% endfor %}
+        </table>
+        <button type="submit">Save Attendance</button>
+    </form>
+    {% endif %}
+    {% endif %}
+
+    <p><a href="{% url 'attendance_list' %}">Back to sessions</a></p>
+</body>
+</html>

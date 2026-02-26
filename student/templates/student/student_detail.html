@@ -1,0 +1,61 @@
+
+<html>
+<head>
+    <title>Student Details</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #f4f4f4; margin: 0; padding: 0; }
+        .container { max-width: 400px; margin: 60px auto; background: #fff; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); padding: 32px; }
+        h2 { color: #2980b9; margin-bottom: 24px; text-align: center; }
+        .detail { margin-bottom: 12px; color: #333; }
+        .back-btn { display: block; margin-top: 18px; color: #2980b9; text-decoration: none; font-weight: bold; text-align: center; }
+        .no-details { color: #c0392b; text-align: center; margin-bottom: 18px; }
+        .action-buttons { margin-top: 20px; display: flex; gap: 10px; justify-content: center; }
+        .action-buttons a { padding: 10px 20px; text-decoration: none; border-radius: 4px; font-weight: 500; }
+        .action-buttons a.edit { background: #3498db; color: white; }
+        .action-buttons a.delete { background: #e74c3c; color: white; }
+        .action-buttons a:hover { opacity: 0.9; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Student Details</h2>
+        
+        {% if messages %}
+            <div style="margin-bottom: 20px;">
+                {% for message in messages %}
+                    <div style="padding: 10px; margin: 10px 0; border-radius: 4px; background: {% if message.tags == 'error' %}#fee; color: #c33;{% else %}#efe; color: #3c3;{% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+        
+        {% if student %}
+            <div class="detail"><strong>Name:</strong> {{ student.name }}</div>
+            <div class="detail"><strong>Grade:</strong> {{ student.grade.get_grade_display }}</div>
+            <div class="detail"><strong>Stream:</strong> {{ student.stream.get_name_display|default:"N/A" }}</div>
+            <div class="detail"><strong>Division:</strong> {{ student.division }}</div>
+            <div class="detail"><strong>Roll Number:</strong> {{ student.roll_number }}</div>
+            <div class="detail"><strong>Phone:</strong> {{ student.phone }}</div>
+            <div class="detail"><strong>Email:</strong> {{ student.email }}</div>
+            <div class="detail"><strong>Address:</strong> {{ student.address }}</div>
+        {% else %}
+            <div class="no-details">No details found for your account.</div>
+        {% endif %}
+        
+        {% if is_admin_view and student %}
+            <div class="action-buttons">
+                <a href="{% url 'student_update' student.pk %}" class="edit">Edit Student</a>
+                <a href="{% url 'student_delete' student.pk %}" class="delete">Delete Student</a>
+            </div>
+        {% endif %}
+        
+        {% if is_admin_view %}
+            <a href="{% url 'student_list' %}" class="back-btn">&#8592; Back to Student List</a>
+            <a href="/admindashboard/" class="back-btn">&#8592; Back to Admin Dashboard</a>
+        {% else %}
+            <a href="/admindashboard/" class="back-btn">&#8592; Back to Admin Dashboard</a>
+        {% endif %}
+    </div>
+</body>
+</html>

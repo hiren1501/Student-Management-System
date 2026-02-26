@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Student Timetable</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+<style>
+  :root{
+    --bg: #0b0f1a;
+    --card: rgba(255,255,255,0.08);
+    --glass: rgba(255,255,255,0.12);
+    --text: #e9eef7;
+    --muted: #9fb0c6;
+    --grid: rgba(255,255,255,0.12);
+    --accent: 255, 92, 135;   /* pink */
+    --accent2: 75, 142, 255;  /* blue  */
+    --shadow: 0 10px 30px rgba(0,0,0,0.35);
+    --radius: 18px;
+  }
+  :root.light{
+    --bg: #f6f8ff;
+    --card: rgba(255,255,255,0.75);
+    --glass: rgba(255,255,255,0.95);
+    --text: #0b1324;
+    --muted: #4b5a70;
+    --grid: rgba(16,24,40,0.08);
+    --shadow: 0 8px 24px rgba(0,0,0,0.08);
+  }
+
+  *{box-sizing:border-box}
+  html,body{height:100%; margin:0; padding:0;}
+  body{
+    font-family:Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Helvetica Neue", sans-serif;
+    color:var(--text);
+    background: radial-gradient(1200px 800px at 10% -10%, rgba(var(--accent),0.25), transparent 60%),
+                radial-gradient(1000px 800px at 110% 30%, rgba(var(--accent2),0.25), transparent 60%),
+                var(--bg);
+    background-attachment: fixed;
+    overflow-x:hidden;
+    display: flex;
+  }
+
+  /* ========== SIDEBAR ========== */
+  .sidebar {
+    width: 260px;
+    padding: 30px 20px;
+    background: rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(18px);
+    border-right: 1px solid rgba(255,255,255,0.1);
+    position: fixed;
+    height: 100%;
+    z-index: 100;
+  }
+
+  .sidebar h2 {
+    text-align: center;
+    font-weight: 700;
+    letter-spacing: 1px;
+    margin-bottom: 40px;
+    background: linear-gradient(90deg, #7f5cff, #00d4ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .sidebar ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .sidebar ul li {
+    margin: 14px 0;
+  }
+
+  .sidebar ul li a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    border-radius: 14px;
+    color: #cfd3ff;
+    text-decoration: none;
+    transition: 0.4s;
+  }
+
+  .sidebar ul li a:hover {
+    background: linear-gradient(135deg, #7f5cff, #00d4ff);
+    color: #fff;
+    box-shadow: 0 0 20px rgba(127,92,255,0.6);
+    transform: translateX(6px);
+  }
+
+  /* ========== MAIN CONTENT ========== */
+  .main-content {
+    margin-left: 260px;
+    width: calc(100% - 260px);
+    padding: 20px;
+  }
+
+  /* Animated floating orbs */
+  .orbs::before, .orbs::after{
+    content:"";
+    position:fixed;
+    width:800px; height:800px;
+    filter: blur(60px);
+    opacity:.35;
+    pointer-events:none;
+    z-index:-1;
+    animation: float 18s ease-in-out infinite;
+  }
+  .orbs::before{
+    background: radial-gradient(circle at 30% 30%, rgba(var(--accent),0.35), transparent 60%);
+    top:-200px; left:-200px;
+  }
+  .orbs::after{
+    background: radial-gradient(circle at 70% 70%, rgba(var(--accent2),0.35), transparent 60%);
+    bottom:-200px; right:-200px;
+    animation-delay: -9s;
+  }
+  @keyframes float{
+    0%,100%{ transform: translate3d(0,0,0) scale(1)}
+    50%{ transform: translate3d(20px,-25px,0) scale(1.05)}
+  }
+
+  .wrap{
+    max-width:1200px;
+    margin: clamp(16px, 3vw, 32px) auto;
+    padding: clamp(12px, 2vw, 24px);
+  }
+
+  /* Header */
+  .topbar{
+    display:flex; align-items:center; gap:12px; justify-content:space-between;
+    padding:14px 18px;
+    background:linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02));
+    border:1px solid rgba(255,255,255,0.12);
+    backdrop-filter: blur(10px);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+  }
+  .title{
+    display:flex; align-items:center; gap:12px;
+  }
+  .logo{
+    width:42px; height:42px; border-radius:12px;
+    background:
+      conic-gradient(from 160deg, rgba(var(--accent2),.8), rgba(var(--accent),.8)),
+      linear-gradient(0deg, rgba(255,255,255,.2), rgba(255,255,255,0));
+    box-shadow: 0 6px 20px rgba(var(--accent2),.25), 0 6px 20px rgba(var(--accent),.25);
+  }
+  h1{
+    font-size: clamp(18px, 3.2vw, 28px);
+    margin:0; letter-spacing:.3px;
+  }
+  .subtitle{color:var(--muted); font-size:12px; margin-top:2px}
+
+  .controls{display:flex; gap:10px; align-items:center; flex-wrap:wrap}
+  button, .pill{
+    border:none; cursor:pointer;
+    padding:10px 14px; border-radius:999px;
+    font-weight:600;
+    background: rgba(255,255,255,0.10);
+    color:var(--text);
+    border:1px solid rgba(255,255,255,0.12);
+    backdrop-filter: blur(6px);
+    transition:.25s ease;
+  }
+  button:hover, .pill:hover{ transform: translateY(-1px); background: rgba(255,255,255,0.16) }
+  .accent{
+    background: linear-gradient(90deg, rgba(var(--accent),.85), rgba(var(--accent2),.85));
+    border: none; color:white;
+    box-shadow: 0 10px 24px rgba(var(--accent2), .25), 0 10px 24px rgba(var(--accent), .25);
+  }
+
+  /* Legend */
+  .legend{
+    display:flex; flex-wrap:wrap; gap:10px; margin:18px 4px;
+  }
+  .tag{
+    display:inline-flex; align-items:center; gap:8px;
+    background: var(--card);
+    padding:8px 12px; border-radius: 12px;
+    border:1px solid rgba(255,255,255,0.12);
+    font-size:12px; color:var(--muted);
+  }
+  .dot{ width:10px; height:10px; border-radius:50%; }
+  .c-math{ background:#ff6b6b }
+  .c-phy{ background:#6c8dff }
+  .c-chem{ background:#7bd389 }
+  .c-eng{ background:#ffd166 }
+  .c-cs{ background:#c77dff }
+  .c-sports{ background:#4dd0e1 }
+  .c-free{ background:#9e9e9e }
+
+  /* Grid */
+  .timetable{
+    width:100%;
+    overflow:hidden;
+    background: var(--glass);
+    border:1px solid rgba(255,255,255,0.14);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+  }
+  .grid{
+    display:grid;
+    grid-template-columns: 120px repeat(5, 1fr);
+    position:relative;
+  }
+  .colhead, .time{
+    position:sticky; top:0; z-index:2;
+    background: linear-gradient(180deg, rgba(255,255,255,0.12), rgba(255,255,255,0.04));
+    backdrop-filter: blur(8px);
+  }
+  .colhead{
+    text-align:center; padding:14px 8px; font-weight:800; letter-spacing:.4px;
+    border-bottom:1px solid var(--grid);
+  }
+  .time{
+    left:0; z-index:3; text-align:right; padding:12px 14px; color:var(--muted);
+    border-right:1px solid var(--grid);
+    background: linear-gradient(180deg, rgba(255,255,255,0.10), rgba(255,255,255,0.04));
+  }
+  .cell{
+    min-height:72px; border-bottom:1px dashed var(--grid);
+    border-right:1px solid var(--grid);
+    position:relative; overflow:hidden;
+  }
+  .cell:last-child{ border-right:none }
+  .row{ display:contents } /* so each timeslot row lines up across columns */
+
+  /* Subject cards */
+  .subject{
+    position:absolute; inset:6px; border-radius:14px;
+    padding:10px 12px;
+    display:flex; flex-direction:column; justify-content:space-between;
+    color:#0b0f1a; font-weight:700;
+    background: white;
+    box-shadow: 0 10px 20px rgba(0,0,0,.15);
+    outline:2px solid rgba(255,255,255,.15);
+    transform: translateZ(0);
+    transition: transform .2s ease, box-shadow .2s ease, outline-color .2s ease, filter .2s ease;
+  }
+  .subject:hover{
+    transform: translateY(-2px);
+    box-shadow: 0 14px 28px rgba(0,0,0,.20);
+    outline-color: rgba(255,255,255,.35);
+    filter: saturate(1.1);
+  }
+  .subject small{ font-weight:600; opacity:.8 }
+  .subject .teacher{ font-size:11px; opacity:.75; font-weight:600 }
+  .subject .room{ font-size:11px; opacity:.85; align-self:flex-end }
+
+  /* Subject theme stripes */
+  .subject::after{
+    content:"";
+    position:absolute; inset:0; border-radius:14px; pointer-events:none;
+    background: linear-gradient(135deg, rgba(255,255,255,.0) 30%, rgba(255,255,255,.25) 100%);
+    mix-blend-mode: screen;
+  }
+  .s-math{ background: linear-gradient(120deg,#ff9aa2,#ff6b6b) }
+  .s-phy{ background: linear-gradient(120deg,#a8c0ff,#6c8dff) }
+  .s-chem{ background: linear-gradient(120deg,#b2f7c1,#7bd389) }
+  .s-eng{ background: linear-gradient(120deg,#ffe99a,#ffd166) }
+  .s-cs{ background: linear-gradient(120deg,#e6c0ff,#c77dff) }
+  .s-sports{ background: linear-gradient(120deg,#a5f5ff,#4dd0e1) }
+  .s-free{ background: linear-gradient(120deg,#e0e0e0,#bdbdbd) }
+
+  /* Current day/time highlights */
+  .day-highlight{
+    position:absolute; top:0; bottom:0; width:calc((100% - 120px)/5);
+    background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,0));
+    pointer-events:none;
+    z-index:1;
+    transition: left .4s ease;
+  }
+  .time-line{
+    position:absolute; height:2px; left:0; right:0;
+    background: linear-gradient(90deg, rgba(var(--accent),.9), rgba(var(--accent2),.9));
+    box-shadow: 0 0 12px rgba(var(--accent2),.5);
+    pointer-events:none; z-index:2;
+    transition: top .6s ease;
+  }
+
+  /* Responsive */
+  @media (max-width: 900px){
+    .sidebar {
+      width: 210px;
+    }
+    .main-content {
+      margin-left: 210px;
+      width: calc(100% - 210px);
+    }
+    .grid{ grid-template-columns: 90px repeat(5, 1fr); }
+    .cell{ min-height:80px }
+  }
+  @media (max-width: 690px){
+    .sidebar {
+      display: none;
+    }
+    .main-content {
+      margin-left: 0;
+      width: 100%;
+    }
+    /* Stack as cards for mobile */
+    .timetable{ padding:14px }
+    .grid{ display:block }
+    .day-highlight, .time-line, .time, .colhead{ position:static; display:none }
+    .day{
+      background: var(--card);
+      border:1px solid var(--grid);
+      border-radius:16px; margin-bottom:14px; overflow:hidden;
+    }
+    .day h3{
+      margin:0; padding:12px 14px; border-bottom:1px solid var(--grid);
+      display:flex; align-items:center; justify-content:space-between;
+    }
+    .slot{ padding:12px; border-bottom:1px dashed var(--grid); position:relative }
+    .slot:last-child{ border-bottom:none }
+    .slot .time-mobile{ color:var(--muted); font-size:12px; margin-bottom:6px }
+    .slot .subject{ position:relative; inset:auto; }
+  }
+
+  /* Print */
+  @media print{
+    .sidebar { display: none !important; }
+    .main-content { margin-left: 0 !important; width: 100% !important; }
+    body{ background:white }
+    .orbs, .controls, .subtitle{ display:none !important }
+    .timetable{ box-shadow:none; border:none }
+    .subject{ box-shadow:none }
+  }
+</style>
+</head>
+<body class="orbs">
+  <div class="sidebar">
+    <h2>ADMIN</h2>
+    <ul>
+      <li><a href="/admindashboard/"><i class="fas fa-chart-line"></i> Dashboard</a></li>
+      <li><a href="{% url 'student_list' %}"><i class="fas fa-user-graduate"></i> Students</a></li>
+      <li><a href="{% url 'student_create' %}"><i class="fas fa-user-plus"></i> Add Student</a></li>
+      <li><a href="{% url 'course_add' %}"><i class="fas fa-book"></i> Subjects</a></li>
+      <li><a href="{% url 'faculty_create' %}"><i class="fas fa-chalkboard-teacher"></i> Faculty</a></li>
+      <li><a href="{% url 'faculty_list' %}"><i class="fas fa-users"></i> Faculties</a></li>
+      <li><a href="{% url 'student_fees_list' %}"><i class="fas fa-money-bill-wave"></i> Student Fees</a></li>
+      <li><a href="{% url 'attendance_list' %}"><i class="fas fa-calendar-check"></i> Attendance</a></li>
+      <li><a href="{% url 'timetable' %}"><i class="fas fa-clock"></i> Timetable</a></li>
+      <li><a href="{% url 'login' %}"><i class="fas fa-right-from-bracket"></i> Logout</a></li>
+    </ul>
+  </div>
+
+  <div class="main-content">
+  <div class="wrap">
+    <div class="topbar">
+      <div class="title">
+        <div class="logo" aria-hidden="true"></div>
+        <div>
+          <h1>Student Timetable</h1>
+          <div class="subtitle">Semester I • Section A • 2025</div>
+        </div>
+      </div>
+      <div class="controls">
+        <button class="accent" id="nowBtn" title="Jump to current time">Jump to Now</button>
+        <button id="themeBtn" title="Toggle light/dark">Toggle Theme</button>
+        <button onclick="window.print()" title="Print / Save as PDF">Print</button>
+        <span class="pill" id="weekLabel">Week of <span></span></span>
+      </div>
+    </div>
+
+    <div class="legend" aria-label="Subject legend">
+      <span class="tag"><span class="dot c-math"></span>Mathematics</span>
+      <span class="tag"><span class="dot c-phy"></span>Physics</span>
+      <span class="tag"><span class="dot c-chem"></span>Chemistry</span>
+      <span class="tag"><span class="dot c-eng"></span>English</span>
+      <span class="tag"><span class="dot c-cs"></span>Computer Science</span>
+      <span class="tag"><span class="dot c-sports"></span>Sports</span>
+      <span class="tag"><span class="dot c-free"></span>Free / Club</span>
+    </div>
+
+    <!-- Desktop / Tablet Grid -->
+    <div class="timetable" id="desktopView" aria-label="Weekly timetable">
+      <div class="grid">
+        <!-- Highlight layers -->
+        <div class="day-highlight" id="dayHighlight" style="left:120px"></div>
+        <div class="time-line" id="timeLine" style="top:140px"></div>
+
+        <!-- Column headers -->
+        <div class="colhead" style="grid-column:1 / 2">Time</div>
+        <div class="colhead">Monday</div>
+        <div class="colhead">Tuesday</div>
+        <div class="colhead">Wednesday</div>
+        <div class="colhead">Thursday</div>
+        <div class="colhead">Friday</div>
+
+        <!-- Time slots (08:00–16:00) -->
+        <!-- Helper: Each row has 6 cells: time + 5 days -->
+        <!-- 08:00 -->
+        <div class="time">08:00–09:00</div>
+        <div class="cell"><div class="subject s-eng"><div>English</div><small class="teacher">Ms. Parker</small><div class="room">R-203</div></div></div>
+        <div class="cell"><div class="subject s-math"><div>Mathematics</div><small class="teacher">Dr. Rao</small><div class="room">R-101</div></div></div>
+        <div class="cell"><div class="subject s-phy"><div>Physics</div><small class="teacher">Mr. Lee</small><div class="room">Lab-1</div></div></div>
+        <div class="cell"><div class="subject s-chem"><div>Chemistry</div><small class="teacher">Dr. Singh</small><div class="room">Lab-3</div></div></div>
+        <div class="cell"><div class="subject s-cs"><div>Intro to CS</div><small class="teacher">Mrs. Das</small><div class="room">CS-2</div></div></div>
+
+        <!-- 09:00 -->
+        <div class="time">09:00–10:00</div>
+        <div class="cell"><div class="subject s-math"><div>Mathematics</div><small class="teacher">Dr. Rao</small><div class="room">R-101</div></div></div>
+        <div class="cell"><div class="subject s-eng"><div>English</div><small class="teacher">Ms. Parker</small><div class="room">R-203</div></div></div>
+        <div class="cell"><div class="subject s-cs"><div>Python Basics</div><small class="teacher">Mrs. Das</small><div class="room">CS-2</div></div></div>
+        <div class="cell"><div class="subject s-phy"><div>Physics</div><small class="teacher">Mr. Lee</small><div class="room">Lab-1</div></div></div>
+        <div class="cell"><div class="subject s-chem"><div>Chemistry</div><small class="teacher">Dr. Singh</small><div class="room">Lab-3</div></div></div>
+
+        <!-- 10:00 -->
+        <div class="time">10:00–11:00</div>
+        <div class="cell"><div class="subject s-phy"><div>Physics</div><small class="teacher">Mr. Lee</small><div class="room">Lab-1</div></div></div>
+        <div class="cell"><div class="subject s-chem"><div>Chemistry</div><small class="teacher">Dr. Singh</small><div class="room">Lab-3</div></div></div>
+        <div class="cell"><div class="subject s-math"><div>Mathematics</div><small class="teacher">Dr. Rao</small><div class="room">R-101</div></div></div>
+        <div class="cell"><div class="subject s-eng"><div>English</div><small class="teacher">Ms. Parker</small><div class="room">R-203</div></div></div>
+        <div class="cell"><div class="subject s-cs"><div>Web Basics</div><small class="teacher">Mrs. Das</small><div class="room">CS-2</div></div></div>
+
+        <!-- 11:00 -->
+        <div class="time">11:00–12:00</div>
+        <div class="cell"><div class="subject s-cs"><div>Data Structures</div><small class="teacher">Mrs. Das</small><div class="room">CS-2</div></div></div>
+        <div class="cell"><div class="subject s-eng"><div>English</div><small class="teacher">Ms. Parker</small><div class="room">R-203</div></div></div>
+        <div class="cell"><div class="subject s-free"><div>Study / Club</div><small class="teacher">—</small><div class="room">Library</div></div></div>
+        <div class="cell"><div class="subject s-math"><div>Mathematics</div><small class="teacher">Dr. Rao</small><div class="room">R-101</div></div></div>
+        <div class="cell"><div class="subject s-phy"><div>Physics</div><small class="teacher">Mr. Lee</small><div class="room">Lab-1</div></div></div>
+
+        <!-- Lunch -->
+        <div class="time">12:00–13:00</div>
+        <div class="cell"><div class="subject s-free"><div>LUNCH</div><small class="teacher">—</small><div class="room">Cafeteria</div></div></div>
+        <div class="cell"><div class="subject s-free"><div>LUNCH</div><small class="teacher">—</small><div class="room">Cafeteria</div></div></div>
+        <div class="cell"><div class="subject s-free"><div>LUNCH</div><small class="teacher">—</small><div class="room">Cafeteria</div></div></div>
+        <div class="cell"><div class="subject s-free"><div>LUNCH</div><small class="teacher">—</small><div class="room">Cafeteria</div></div></div>
+        <div class="cell"><div class="subject s-free"><div>LUNCH</div><small class="teacher">—</small><div class="room">Cafeteria</div></div></div>
+
+        <!-- 13:00 -->
+        <div class="time">13:00–14:00</div>
+        <div class="cell"><div class="subject s-chem"><div>Chemistry Lab</div><small class="teacher">Dr. Singh</small><div class="room">Lab-3</div></div></div>
+        <div class="cell"><div class="subject s-phy"><div>Physics Lab</div><small class="teacher">Mr. Lee</small><div class="room">Lab-1</div></div></div>
+        <div class="cell"><div class="subject s-cs"><div>Algorithms</div><small class="teacher">Mrs. Das</small><div class="room">CS-1</div></div></div>
+        <div class="cell"><div class="subject s-eng"><div>Presentation Skills</div><small class="teacher">Ms. Parker</small><div class="room">Seminar</div></div></div>
+        <div class="cell"><div class="subject s-math"><div>Statistics</div><small class="teacher">Dr. Rao</small><div class="room">R-102</div></div></div>
+
+        <!-- 14:00 -->
+        <div class="time">14:00–15:00</div>
+        <div class="cell"><div class="subject s-sports"><div>Sports</div><small class="teacher">Coach Patil</small><div class="room">Ground</div></div></div>
+        <div class="cell"><div class="subject s-eng"><div>English</div><small class="teacher">Ms. Parker</small><div class="room">R-203</div></div></div>
+        <div class="cell"><div class="subject s-chem"><div>Organic Chem</div><small class="teacher">Dr. Singh</small><div class="room">R-205</div></div></div>
+        <div class="cell"><div class="subject s-cs"><div>Databases</div><small class="teacher">Mrs. Das</small><div class="room">CS-1</div></div></div>
+        <div class="cell"><div class="subject s-phy"><div>Electromagnetism</div><small class="teacher">Mr. Lee</small><div class="room">R-210</div></div></div>
+
+        <!-- 15:00 -->
+        <div class="time">15:00–16:00</div>
+        <div class="cell"><div class="subject s-cs"><div>Project Lab</div><small class="teacher">Mrs. Das</small><div class="room">CS-3</div></div></div>
+        <div class="cell"><div class="subject s-math"><div>Calculus II</div><small class="teacher">Dr. Rao</small><div class="room">R-101</div></div></div>
+        <div class="cell"><div class="subject s-free"><div>Study Hour</div><small class="teacher">—</small><div class="room">Library</div></div></div>
+        <div class="cell"><div class="subject s-chem"><div>Physical Chem</div><small class="teacher">Dr. Singh</small><div class="room">R-205</div></div></div>
+        <div class="cell"><div class="subject s-eng"><div>Debate Club</div><small class="teacher">Ms. Parker</small><div class="room">Auditorium</div></div></div>
+      </div>
+    </div>
+
+    <!-- Mobile stacked view (auto from CSS) -->
+    <div class="timetable day" id="mobileView" aria-label="Weekly timetable (mobile)" style="display:none">
+      <!-- Generated dynamically for small screens if desired -->
+    </div>
+  </div>
+
+<script>
+  // Theme toggle with localStorage
+  const root = document.documentElement;
+  const prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+  const savedTheme = localStorage.getItem('timetable-theme');
+  if(savedTheme === 'light' || (!savedTheme && prefersLight)) root.classList.add('light');
+
+  document.getElementById('themeBtn').addEventListener('click', () => {
+    root.classList.toggle('light');
+    localStorage.setItem('timetable-theme', root.classList.contains('light') ? 'light' : 'dark');
+  });
+
+  // Week label
+  const weekSpan = document.querySelector('#weekLabel span');
+  const now = new Date();
+  function fmt(d){ return d.toLocaleDateString(undefined,{month:'short', day:'numeric'}); }
+  // Start Monday
+  const day = (now.getDay() + 6) % 7; // 0..6 Mon..Sun
+  const monday = new Date(now); monday.setDate(now.getDate() - day);
+  const friday = new Date(monday); friday.setDate(monday.getDate() + 4);
+  weekSpan.textContent = `${fmt(monday)} – ${fmt(friday)}`;
+
+  // Highlight current day column + time line (08:00–16:00)
+  const dayHighlight = document.getElementById('dayHighlight');
+  const timeLine = document.getElementById('timeLine');
+
+  function updateIndicators(){
+    const grid = document.querySelector('.grid');
+    const rect = grid.getBoundingClientRect();
+    const startHour = 8, endHour = 16;
+    const nowLocal = new Date();
+
+    // Day column (Mon=0..Fri=4)
+    let wd = (nowLocal.getDay() + 6) % 7; // Mon=0..Sun=6
+    if(wd > 4){ dayHighlight.style.display='none'; }
+    else {
+      dayHighlight.style.display='block';
+      const colWidth = (rect.width - 120) / 5;
+      dayHighlight.style.left = (120 + wd * colWidth) + 'px';
+    }
+
+    // Time line
+    let t = nowLocal.getHours() + nowLocal.getMinutes()/60;
+    if(t < startHour || t > endHour){
+      timeLine.style.display='none';
+    } else {
+      timeLine.style.display='block';
+      // Each hour row is 1 unit tall; measure one cell height
+      const aCell = document.querySelector('.cell');
+      const cellH = aCell ? aCell.getBoundingClientRect().height : 72;
+      const y = (t - startHour) * cellH + // hours from start
+                // plus header height (~1 header row)
+                document.querySelector('.colhead').getBoundingClientRect().height;
+      timeLine.style.top = y + 'px';
+    }
+  }
+  updateIndicators();
+  window.addEventListener('resize', updateIndicators);
+  setInterval(updateIndicators, 30000);
+
+  // Jump to now: scroll grid so the current time line is roughly centered
+  document.getElementById('nowBtn').addEventListener('click', () => {
+    const tt = document.querySelector('.timetable');
+    tt.scrollIntoView({behavior:'smooth', block:'start'});
+    // additional slight scroll to bring line into view
+    const line = document.getElementById('timeLine');
+    if(line && line.offsetParent !== null){
+      const top = line.getBoundingClientRect().top + window.scrollY - window.innerHeight*0.35;
+      window.scrollTo({top, behavior:'smooth'});
+    }
+  });
+
+  // Optional: build a simple mobile stacked view (for demonstration)
+  function buildMobile(){
+    const isSmall = window.matchMedia('(max-width:690px)').matches;
+    const mobile = document.getElementById('mobileView');
+    const desktop = document.getElementById('desktopView');
+    if(isSmall){
+      mobile.style.display = 'block';
+      desktop.style.display = 'none';
+      if(!mobile.dataset.ready){
+        const days = ['Monday','Tuesday','Wednesday','Thursday','Friday'];
+        const slots = [
+          '08:00–09:00','09:00–10:00','10:00–11:00','11:00–12:00','12:00–13:00',
+          '13:00–14:00','14:00–15:00','15:00–16:00'
+        ];
+        // Grab subjects from desktop cells to mirror into mobile
+        const gridCells = [...document.querySelectorAll('.grid .cell')];
+        const perRow = 5;
+        mobile.innerHTML = '';
+        days.forEach((d, di)=>{
+          const section = document.createElement('section');
+          section.className='day';
+          const h3 = document.createElement('h3');
+          h3.innerHTML = `<span>${d}</span><span style="color:var(--muted); font-size:12px;">8 periods</span>`;
+          section.appendChild(h3);
+          slots.forEach((t, ri)=>{
+            const slot = document.createElement('div');
+            slot.className='slot';
+            const time = document.createElement('div');
+            time.className='time-mobile';
+            time.textContent = t;
+            slot.appendChild(time);
+            // compute index: for each time row, cells are [Mon..Fri] in order
+            const cellIndex = ri*(perRow+1) + 1 + di; // +1 to skip time column
+            const cell = gridCells[cellIndex];
+            slot.appendChild(cell.firstElementChild.cloneNode(true));
+            section.appendChild(slot);
+          });
+          mobile.appendChild(section);
+        });
+        mobile.dataset.ready = '1';
+      }
+    }else{
+      mobile.style.display = 'none';
+      desktop.style.display = 'block';
+    }
+  }
+  buildMobile();
+  window.addEventListener('resize', buildMobile);
+
+</script>
+  </div>
+  </div>
+</body>
+</html>

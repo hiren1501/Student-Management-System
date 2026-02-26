@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Dashboard</title>
+
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Icons -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Inter", sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background: radial-gradient(circle at top, #1a1f36, #0b0f1f);
+      color: #fff;
+      display: flex;
+    }
+
+    /* ========== SIDEBAR ========== */
+    .sidebar {
+      width: 260px;
+      padding: 30px 20px;
+      background: rgba(255, 255, 255, 0.06);
+      backdrop-filter: blur(18px);
+      border-right: 1px solid rgba(255,255,255,0.1);
+      position: fixed;
+      height: 100%;
+    }
+
+    .sidebar h2 {
+      text-align: center;
+      font-weight: 700;
+      letter-spacing: 1px;
+      margin-bottom: 40px;
+      background: linear-gradient(90deg, #7f5cff, #00d4ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .sidebar ul {
+      list-style: none;
+    }
+
+    .sidebar ul li {
+      margin: 14px 0;
+    }
+
+    .sidebar ul li a {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 16px;
+      border-radius: 14px;
+      color: #cfd3ff;
+      text-decoration: none;
+      transition: 0.4s;
+    }
+
+    .sidebar ul li a:hover {
+      background: linear-gradient(135deg, #7f5cff, #00d4ff);
+      color: #fff;
+      box-shadow: 0 0 20px rgba(127,92,255,0.6);
+      transform: translateX(6px);
+    }
+
+    /* ========== MAIN ========== */
+    .main {
+      margin-left: 260px;
+      padding: 40px;
+      width: 100%;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 35px;
+    }
+
+    .header h1 {
+      font-size: 28px;
+      font-weight: 700;
+    }
+
+    .header span {
+      color: #7f5cff;
+    }
+
+    /* ========== CARDS ========== */
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 25px;
+      margin-bottom: 40px;
+    }
+
+    .card {
+      padding: 30px;
+      border-radius: 22px;
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(145deg, rgba(255,255,255,0.12), rgba(255,255,255,0.02));
+      backdrop-filter: blur(20px);
+      transition: 0.4s;
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(120deg, transparent, rgba(255,255,255,0.25), transparent);
+      opacity: 0;
+      transition: 0.4s;
+    }
+
+    .card:hover::before {
+      opacity: 1;
+    }
+
+    .card:hover {
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: 0 25px 60px rgba(0,0,0,0.5);
+    }
+
+    .card i {
+      font-size: 34px;
+      margin-bottom: 15px;
+      background: linear-gradient(135deg, #7f5cff, #00d4ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .card h3 {
+      font-size: 15px;
+      font-weight: 500;
+      opacity: 0.8;
+      margin-bottom: 8px;
+    }
+
+    .card p {
+      font-size: 34px;
+      font-weight: 700;
+    }
+
+    /* ========== ACTIVITY ========== */
+    .content {
+      background: rgba(255, 255, 255, 0.07);
+      backdrop-filter: blur(18px);
+      padding: 30px;
+      border-radius: 22px;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.08);
+    }
+
+    .content h2 {
+      font-size: 20px;
+      margin-bottom: 20px;
+      color: #7f5cff;
+    }
+
+    .content ul {
+      list-style: none;
+    }
+
+    .content ul li {
+      padding: 14px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      opacity: 0.85;
+    }
+
+    .content ul li:last-child {
+      border-bottom: none;
+    }
+
+    /* ========== RESPONSIVE ========== */
+    @media(max-width: 900px) {
+      .sidebar {
+        width: 210px;
+      }
+      .main {
+        margin-left: 210px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+{% csrf_token %}
+
+<div class="sidebar">
+  <h2>ADMIN</h2>
+  <ul>
+    <li><a href="/admindashboard/"><i class="fas fa-chart-line"></i> Dashboard</a></li>
+    <li><a href="{% url 'student_list' %}"><i class="fas fa-user-graduate"></i> Students</a></li>
+    <li><a href="{% url 'student_create' %}"><i class="fas fa-user-plus"></i> Add Student</a></li>
+    <li><a href="{% url 'course_add' %}"><i class="fas fa-book"></i> Subjects</a></li>
+    <li><a href="{% url 'faculty_create' %}"><i class="fas fa-chalkboard-teacher"></i> Faculty</a></li>
+    <li><a href="{% url 'faculty_list' %}"><i class="fas fa-users"></i> Faculties</a></li>
+    <li><a href="{% url 'student_fees_list' %}"><i class="fas fa-money-bill-wave"></i> Student Fees</a></li>
+    <li><a href="{% url 'attendance_list' %}"><i class="fas fa-calendar-check"></i> Attendance</a></li>
+    <li><a href="{% url 'timetable' %}"><i class="fas fa-clock"></i> Timetable</a></li>
+    <li><a href="{% url 'login' %}"><i class="fas fa-right-from-bracket"></i> Logout</a></li>
+  </ul>
+</div>
+
+<div class="main">
+  <div class="header">
+    <h1>Welcome back, <span>Admin</span> 👋</h1>
+  </div>
+
+  <div class="cards">
+    <div class="card">
+      <i class="fas fa-user-graduate"></i>
+      <h3>Total Students</h3>
+      <p>{{ total_students|default:0 }}</p>
+    </div>
+
+    <div class="card">
+      <i class="fas fa-book-open"></i>
+      <h3>Total Courses</h3>
+      <p>{{ total_courses|default:0 }}</p>
+    </div>
+
+    <div class="card">
+      <i class="fas fa-chalkboard-teacher"></i>
+      <h3>Total Faculties</h3>
+      <p>{{ total_faculties|default:0 }}</p>
+    </div>
+  </div>
+
+  
+</div>
+
+</body>
+</html>

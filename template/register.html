@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Registration</title>
+    <style>
+      /* Reset & base */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Segoe UI", sans-serif;
+      }
+
+      body {
+        background: linear-gradient(135deg, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0.5) 100%),
+          url("https://images.unsplash.com/photo-1523580494863-6f3031224c94?w=1200&q=80")
+          no-repeat center / cover;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+      }
+
+      /* Form container */
+      .form-box {
+        background: rgba(255, 255, 255, 0.9);
+        padding: 40px 30px;
+        width: 100%;
+        max-width: 700px;
+        border-radius: 12px;
+        box-shadow: 0 15px 25px rgba(0, 0, 0, 0.2);
+      }
+
+      .form-box h2 {
+        text-align: center;
+        margin-bottom: 30px;
+        color: #2c3e50;
+      }
+
+      /* Grid layout */
+      .row {
+        display: flex;
+        gap: 20px;
+        flex-wrap: wrap;
+      }
+
+      .field {
+        flex: 1 1 250px;
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 20px;
+      }
+
+      .field label {
+        margin-bottom: 6px;
+        color: #34495e;
+        font-weight: 600;
+      }
+
+      .field input,
+      .field select,
+      .field textarea {
+        padding: 10px 12px;
+        border: 2px solid #ccc;
+        border-radius: 6px;
+        font-size: 15px;
+        outline: none;
+        transition: border-color 0.3s;
+      }
+
+      .field input:focus,
+      .field select:focus,
+      .field textarea:focus {
+        border-color: #2980b9;
+      }
+
+      .radio-group {
+        display: flex;
+        gap: 15px;
+        padding-top: 8px;
+      }
+
+      .radio-group input {
+        margin-right: 5px;
+      }
+
+      /* Submit button */
+      .btn {
+        width: 100%;
+        padding: 12px;
+        background: #2980b9;
+        border: none;
+        color: #fff;
+        font-size: 17px;
+        font-weight: 600;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background 0.3s;
+        margin-top: 10px;
+      }
+
+      .btn:hover {
+        background: #1f5f8c;
+      }
+
+      .error-message {
+        color: #d32f2f;
+        font-size: 0.85rem;
+        margin-top: 5px;
+        display: none;
+      }
+
+      .error-message.show {
+        display: block;
+      }
+
+      .field input.error,
+      .field select.error,
+      .field textarea.error {
+        border-color: #d32f2f;
+      }
+
+      /* Responsive tweaks */
+      @media (max-width: 576px) {
+        .row {
+          flex-direction: column;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="form-box">
+      <h2>Registration</h2>
+      {% if error %}
+        <div style="background-color: #f8d7da; color: #721c24; padding: 12px; border-radius: 4px; margin-bottom: 20px; border: 1px solid #f5c6cb;">
+          {{ error }}
+        </div>
+      {% endif %}
+      <form action="#" method="POST">
+        {% csrf_token %}
+        <!-- User Type Selection -->
+        <div class="field">
+          <label>Register as:</label>
+          <div class="radio-group">
+            <label><input type="radio" name="user_type" value="student" checked /> Student</label>
+            <label><input type="radio" name="user_type" value="faculty" /> Faculty</label>
+          </div>
+        </div>
+
+        <!-- 1 ▸ Basic Information -->
+        <div class="row">
+          <div class="field">
+            <label for="fname">First Name</label>
+            <input type="text" id="fname" name="first_name" placeholder="Enter first name" required />
+            <span class="error-message" id="fnameError"></span>
+          </div>
+          <div class="field">
+            <label for="lname">Last Name</label>
+            <input type="text" id="lname" name="last_name" placeholder="Enter last name" required />
+            <span class="error-message" id="lnameError"></span>
+          </div>
+        </div>
+
+        <!-- 2 ▸ Contact Information -->
+        <div class="row">
+          <div class="field">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" placeholder="Enter Email Addess" required />
+            <span class="error-message" id="emailError"></span>
+          </div>
+          <div class="field">
+            <label for="phone">Phone</label>
+            <input
+              type="tel"
+              id="phone"
+              name="phone"
+              pattern="[0-9]{10}"
+              placeholder="10‑digit number"
+              required
+            />
+            <span class="error-message" id="phoneError"></span>
+          </div>
+        </div>
+
+        <!-- 3 ▸ Personal Details -->
+        <div class="row">
+          <div class="field">
+            <label for="dob">Date of Birth</label>
+            <input type="date" id="dob" name="dob" required />
+            <span class="error-message" id="dobError"></span>
+          </div>
+          <div class="field">
+            <label>Gender</label>
+            <div class="radio-group">
+              <label><input type="radio" name="gender" value="Male" required /> Male</label>
+              <label><input type="radio" name="gender" value="Female" /> Female</label>
+              <label><input type="radio" name="gender" value="Other" /> Other</label>
+            </div>
+            <span class="error-message" id="genderError"></span>
+          </div>
+        </div>
+
+        <!-- 4 ▸ Address -->
+        <div class="field">
+          <label for="address">Address</label>
+          <textarea id="address" name="address" rows="3" required></textarea>
+          <span class="error-message" id="addressError"></span>
+        </div>
+
+        <!-- Faculty-specific fields -->
+        <div id="faculty-fields" style="display: none;">
+          <div class="row">
+            <div class="field">
+              <label for="qualification">Qualification</label>
+              <input type="text" id="qualification" name="qualification" placeholder="e.g., M.Tech, B.Tech" />
+            </div>
+            <div class="field">
+              <label for="experience">Years of Experience</label>
+              <input type="number" id="experience" name="experience_years" min="0" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Student-specific fields (currently commented out)
+        <div id="student-fields">
+          <div class="row">
+            <div class="field">
+              <label for="course">Course</label>
+              <select id="course" name="course">
+                <option value="">Select Course</option>
+                <option value="bscit">BScIT</option>
+                <option value="bca">BCA</option>
+                <option value="msccs">MScCS</option>
+                <option value="mca">MCA</option>
+              </select>
+            </div>
+          </div>
+        </div>-->
+
+        <!-- Password fields -->
+        <div class="row">
+          <div class="field">
+            <label for="password">Password</label>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              minlength="6"
+              required
+            />
+            <span class="error-message" id="passwordError"></span>
+          </div>
+          <div class="field">
+            <label for="confirmpassword">Confirm Password</label>
+            <input
+              type="password"
+              id="confirmpassword"
+              name="confirmpassword"
+              minlength="6"
+              required
+            />
+            <span class="error-message" id="confirmpasswordError"></span>
+          </div>
+        </div>
+
+        <!-- ✅ Register button inside form -->
+        <button type="submit" class="btn">Register</button>
+      </form>
+    </div>
+
+    <script>
+      const form = document.querySelector("form");
+      const userTypeRadios = document.querySelectorAll('input[name="user_type"]');
+      const studentFields = document.getElementById("student-fields");
+      const facultyFields = document.getElementById("faculty-fields");
+
+      // Form fields
+      const fname = document.getElementById('fname');
+      const lname = document.getElementById('lname');
+      const email = document.getElementById('email');
+      const phone = document.getElementById('phone');
+      const dob = document.getElementById('dob');
+      const address = document.getElementById('address');
+      const password = document.getElementById('password');
+      const confirmpassword = document.getElementById('confirmpassword');
+      const genderRadios = document.querySelectorAll('input[name="gender"]');
+
+      // Error elements
+      const fnameError = document.getElementById('fnameError');
+      const lnameError = document.getElementById('lnameError');
+      const emailError = document.getElementById('emailError');
+      const phoneError = document.getElementById('phoneError');
+      const dobError = document.getElementById('dobError');
+      const genderError = document.getElementById('genderError');
+      const addressError = document.getElementById('addressError');
+      const passwordError = document.getElementById('passwordError');
+      const confirmpasswordError = document.getElementById('confirmpasswordError');
+
+      // Toggle fields based on user type
+      function toggleFields() {
+        const userType = document.querySelector('input[name="user_type"]:checked').value;
+        if (userType === "student") {
+          if (studentFields) studentFields.style.display = "block";
+          facultyFields.style.display = "none";
+        } else {
+          if (studentFields) studentFields.style.display = "none";
+          facultyFields.style.display = "block";
+        }
+      }
+
+      userTypeRadios.forEach(radio => {
+        radio.addEventListener("change", toggleFields);
+      });
+
+      // Real-time validation
+      fname.addEventListener('input', validateFirstName);
+      lname.addEventListener('input', validateLastName);
+      email.addEventListener('input', validateEmail);
+      phone.addEventListener('input', validatePhone);
+      dob.addEventListener('change', validateDOB);
+      address.addEventListener('input', validateAddress);
+      password.addEventListener('input', validatePassword);
+      confirmpassword.addEventListener('input', validateConfirmPassword);
+
+      function validateFirstName() {
+        const value = fname.value.trim();
+        if (value === '') {
+          showError(fname, fnameError, 'First name is required');
+          return false;
+        } else if (value.length < 2) {
+          showError(fname, fnameError, 'First name must be at least 2 characters');
+          return false;
+        } else if (!/^[a-zA-Z\s]+$/.test(value)) {
+          showError(fname, fnameError, 'First name can only contain letters');
+          return false;
+        } else {
+          clearError(fname, fnameError);
+          return true;
+        }
+      }
+
+      function validateLastName() {
+        const value = lname.value.trim();
+        if (value === '') {
+          showError(lname, lnameError, 'Last name is required');
+          return false;
+        } else if (value.length < 2) {
+          showError(lname, lnameError, 'Last name must be at least 2 characters');
+          return false;
+        } else if (!/^[a-zA-Z\s]+$/.test(value)) {
+          showError(lname, lnameError, 'Last name can only contain letters');
+          return false;
+        } else {
+          clearError(lname, lnameError);
+          return true;
+        }
+      }
+
+      function validateEmail() {
+        const value = email.value.trim();
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        
+        if (value === '') {
+          showError(email, emailError, 'Email is required');
+          return false;
+        } else if (!emailPattern.test(value)) {
+          showError(email, emailError, 'Please enter a valid email address');
+          return false;
+        } else {
+          clearError(email, emailError);
+          return true;
+        }
+      }
+
+      function validatePhone() {
+        const value = phone.value.trim();
+        
+        if (value === '') {
+          showError(phone, phoneError, 'Phone number is required');
+          return false;
+        } else if (!/^[0-9]{10}$/.test(value)) {
+          showError(phone, phoneError, 'Phone number must be exactly 10 digits');
+          return false;
+        } else {
+          clearError(phone, phoneError);
+          return true;
+        }
+      }
+
+      function validateDOB() {
+        const value = dob.value;
+        
+        if (value === '') {
+          showError(dob, dobError, 'Date of birth is required');
+          return false;
+        }
+        
+        const selectedDate = new Date(value);
+        const today = new Date();
+        const age = today.getFullYear() - selectedDate.getFullYear();
+        
+        if (selectedDate > today) {
+          showError(dob, dobError, 'Date of birth cannot be in the future');
+          return false;
+        } else if (age < 5) {
+          showError(dob, dobError, 'Age must be at least 5 years');
+          return false;
+        } else if (age > 100) {
+          showError(dob, dobError, 'Please enter a valid date of birth');
+          return false;
+        } else {
+          clearError(dob, dobError);
+          return true;
+        }
+      }
+
+      function validateGender() {
+        const isChecked = Array.from(genderRadios).some(radio => radio.checked);
+        
+        if (!isChecked) {
+          showError(null, genderError, 'Please select a gender');
+          return false;
+        } else {
+          clearError(null, genderError);
+          return true;
+        }
+      }
+
+      function validateAddress() {
+        const value = address.value.trim();
+        
+        if (value === '') {
+          showError(address, addressError, 'Address is required');
+          return false;
+        } else if (value.length < 10) {
+          showError(address, addressError, 'Address must be at least 10 characters');
+          return false;
+        } else {
+          clearError(address, addressError);
+          return true;
+        }
+      }
+
+      function validatePassword() {
+        const value = password.value;
+        
+        if (value === '') {
+          showError(password, passwordError, 'Password is required');
+          return false;
+        } else if (value.length < 6) {
+          showError(password, passwordError, 'Password must be at least 6 characters');
+          return false;
+        } else if (!/(?=.*[a-z])/.test(value)) {
+          showError(password, passwordError, 'Password must contain at least one lowercase letter');
+          return false;
+        } else if (!/(?=.*[A-Z])/.test(value)) {
+          showError(password, passwordError, 'Password must contain at least one uppercase letter');
+          return false;
+        } else if (!/(?=.*\d)/.test(value)) {
+          showError(password, passwordError, 'Password must contain at least one number');
+          return false;
+        } else {
+          clearError(password, passwordError);
+          validateConfirmPassword(); // Re-validate confirm password
+          return true;
+        }
+      }
+
+      function validateConfirmPassword() {
+        const value = confirmpassword.value;
+        const passwordValue = password.value;
+        
+        if (value === '') {
+          showError(confirmpassword, confirmpasswordError, 'Please confirm your password');
+          return false;
+        } else if (value !== passwordValue) {
+          showError(confirmpassword, confirmpasswordError, 'Passwords do not match');
+          return false;
+        } else {
+          clearError(confirmpassword, confirmpasswordError);
+          return true;
+        }
+      }
+
+      function showError(input, errorElement, message) {
+        if (input) input.classList.add('error');
+        errorElement.textContent = message;
+        errorElement.classList.add('show');
+      }
+
+      function clearError(input, errorElement) {
+        if (input) input.classList.remove('error');
+        errorElement.textContent = '';
+        errorElement.classList.remove('show');
+      }
+
+      // Form submission validation
+      form.addEventListener("submit", (e) => {
+        const isFnameValid = validateFirstName();
+        const isLnameValid = validateLastName();
+        const isEmailValid = validateEmail();
+        const isPhoneValid = validatePhone();
+        const isDOBValid = validateDOB();
+        const isGenderValid = validateGender();
+        const isAddressValid = validateAddress();
+        const isPasswordValid = validatePassword();
+        const isConfirmPasswordValid = validateConfirmPassword();
+
+        if (!isFnameValid || !isLnameValid || !isEmailValid || !isPhoneValid || 
+            !isDOBValid || !isGenderValid || !isAddressValid || 
+            !isPasswordValid || !isConfirmPasswordValid) {
+          e.preventDefault();
+          alert("Please fix all errors before submitting the form");
+        }
+      });
+    </script>
+  </body>
+</html>

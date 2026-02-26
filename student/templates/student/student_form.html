@@ -1,0 +1,480 @@
+
+<html>
+<head>
+    <title>{% if student %}Edit{% else %}Add{% endif %} Student</title>
+    
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Inter", sans-serif;
+        }
+
+        body { 
+            min-height: 100vh;
+            background: radial-gradient(circle at top, #1a1f36, #0b0f1f);
+            color: #fff;
+            display: flex;
+        }
+
+        /* ========== SIDEBAR ========== */
+        .sidebar {
+            width: 260px;
+            padding: 30px 20px;
+            background: rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(18px);
+            border-right: 1px solid rgba(255,255,255,0.1);
+            position: fixed;
+            height: 100%;
+        }
+
+        .sidebar h2 {
+            text-align: center;
+            font-weight: 700;
+            letter-spacing: 1px;
+            margin-bottom: 40px;
+            background: linear-gradient(90deg, #7f5cff, #00d4ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .sidebar ul {
+            list-style: none;
+        }
+
+        .sidebar ul li {
+            margin: 14px 0;
+        }
+
+        .sidebar ul li a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 16px;
+            border-radius: 14px;
+            color: #cfd3ff;
+            text-decoration: none;
+            transition: 0.4s;
+        }
+
+        .sidebar ul li a:hover {
+            background: linear-gradient(135deg, #7f5cff, #00d4ff);
+            color: #fff;
+            box-shadow: 0 0 20px rgba(127,92,255,0.6);
+            transform: translateX(6px);
+        }
+
+        /* ========== MAIN ========== */
+        .main {
+            margin-left: 260px;
+            padding: 40px;
+            width: 100%;
+        }
+
+        .container { 
+            max-width: 700px; 
+            margin: 0 auto; 
+            background: rgba(255, 255, 255, 0.07);
+            backdrop-filter: blur(18px);
+            border-radius: 22px; 
+            box-shadow: inset 0 0 0 1px rgba(255,255,255,0.08);
+            padding: 32px; 
+        }
+        
+        h2 { 
+            color: #7f5cff; 
+            margin-bottom: 24px; 
+            text-align: center;
+            font-size: 28px;
+            font-weight: 700;
+        }
+        
+        form { 
+            display: flex; 
+            flex-direction: column; 
+            gap: 16px; 
+        }
+        
+        .form-row { 
+            display: flex; 
+            gap: 16px; 
+        }
+        
+        .form-row > div { 
+            flex: 1; 
+        }
+        
+        label { 
+            font-weight: 500; 
+            color: #cfd3ff; 
+            margin-bottom: 6px;
+            display: block;
+        }
+        
+        input, select, textarea { 
+            padding: 10px; 
+            border-radius: 8px; 
+            border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            font-size: 14px; 
+            width: 100%; 
+            box-sizing: border-box;
+            transition: 0.3s;
+        }
+
+        select option {
+            background: #1a1f36;
+            color: #fff;
+            padding: 10px;
+        }
+
+        select option:hover {
+            background: #2a3f56;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #7f5cff;
+            box-shadow: 0 0 10px rgba(127,92,255,0.3);
+        }
+
+        input::placeholder, textarea::placeholder {
+            color: rgba(255,255,255,0.4);
+        }
+        
+        textarea { 
+            resize: vertical; 
+            min-height: 60px; 
+        }
+        
+        .btn { 
+            background: linear-gradient(135deg, #7f5cff, #00d4ff);
+            color: #fff; 
+            border: none; 
+            border-radius: 10px; 
+            padding: 12px 0; 
+            font-size: 1rem; 
+            cursor: pointer; 
+            margin-top: 8px;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+        
+        .btn:hover { 
+            box-shadow: 0 0 20px rgba(127,92,255,0.6);
+            transform: translateY(-2px);
+        }
+        
+        .back-btn { 
+            display: block; 
+            margin-top: 18px; 
+            color: #7f5cff; 
+            text-decoration: none; 
+            font-weight: bold; 
+            text-align: center;
+            transition: 0.3s;
+        }
+        
+        .back-btn:hover { 
+            color: #00d4ff;
+            text-decoration: underline; 
+        }
+        
+        .error-message { 
+            color: #ff6b6b; 
+            font-size: 0.85rem; 
+            margin-top: 5px; 
+            display: none; 
+        }
+        
+        .error-message.show { 
+            display: block; 
+        }
+        
+        input.error, select.error, textarea.error { 
+            border-color: #ff6b6b;
+            box-shadow: 0 0 10px rgba(255,107,107,0.3);
+        }
+
+        /* ========== RESPONSIVE ========== */
+        @media(max-width: 900px) {
+            .sidebar {
+                width: 210px;
+            }
+            .main {
+                margin-left: 210px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h2>ADMIN</h2>
+        <ul>
+            <li><a href="/admindashboard/"><i class="fas fa-chart-line"></i> Dashboard</a></li>
+            <li><a href="{% url 'student_list' %}"><i class="fas fa-user-graduate"></i> Students</a></li>
+            <li><a href="{% url 'student_create' %}"><i class="fas fa-user-plus"></i> Add Student</a></li>
+            <li><a href="{% url 'course_add' %}"><i class="fas fa-book"></i> Subjects</a></li>
+            <li><a href="{% url 'faculty_create' %}"><i class="fas fa-chalkboard-teacher"></i> Faculty</a></li>
+            <li><a href="{% url 'faculty_list' %}"><i class="fas fa-users"></i> Faculties</a></li>
+            <li><a href="{% url 'student_fees_list' %}"><i class="fas fa-money-bill-wave"></i> Student Fees</a></li>
+            <li><a href="{% url 'attendance_list' %}"><i class="fas fa-calendar-check"></i> Attendance</a></li>
+            <li><a href="{% url 'timetable' %}"><i class="fas fa-clock"></i> Timetable</a></li>
+            <li><a href="{% url 'login' %}"><i class="fas fa-right-from-bracket"></i> Logout</a></li>
+        </ul>
+    </div>
+
+    <div class="main">
+        <div class="container">
+            <h2>{% if student %}Edit{% else %}Add{% endif %} Student</h2>
+            <form method="post" id="studentForm">
+            {% csrf_token %}
+            <label>Name:</label>
+            <input type="text" id="name" name="name" value="{{ student.name|default:'' }}" required>
+            <span class="error-message" id="nameError"></span>
+            
+            <label>Roll Number:</label>
+            <input type="text" id="roll_number" name="roll_number" value="{{ student.roll_number|default:'' }}" required>
+            <span class="error-message" id="rollNumberError"></span>
+            
+            <div class="form-row">
+                <div>
+                    <label>Grade:</label>
+                    <select id="grade" name="grade" required>
+                        <option value="">Select Grade</option>
+                        {% for grade in grades %}
+                            <option value="{{ grade.id }}" {% if student.grade.id == grade.id %}selected{% endif %}>
+                                {{ grade.get_grade_display }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                    <span class="error-message" id="gradeError"></span>
+                </div>
+                <div>
+                    <label>Stream (11-12 only):</label>
+                    <select id="stream" name="stream">
+                        <option value="">Not Applicable</option>
+                        {% for stream in streams %}
+                            <option value="{{ stream.id }}" {% if student.stream.id == stream.id %}selected{% endif %}>
+                                {{ stream.get_name_display }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            
+            <label>Division:</label>
+            <input type="text" id="division" name="division" value="{{ student.division|default:'' }}" placeholder="e.g., A, B, C" required>
+            <span class="error-message" id="divisionError"></span>
+            
+            <label>Phone:</label>
+            <input type="text" id="phone" name="phone" value="{{ student.phone|default:'' }}">
+            <span class="error-message" id="phoneError"></span>
+            
+            <label>Email:</label>
+            <input type="email" id="email" name="email" value="{{ student.email|default:'' }}">
+            <span class="error-message" id="emailError"></span>
+            
+            <label>Date of Birth:</label>
+            <input type="date" id="date_of_birth" name="date_of_birth" value="{{ student.date_of_birth|default:'' }}">
+            <span class="error-message" id="dobError"></span>
+            
+            <label>Address:</label>
+            <textarea id="address" name="address" required>{{ student.address|default:'' }}</textarea>
+            <span class="error-message" id="addressError"></span>
+            
+            <input type="submit" value="Save" class="btn">
+        </form>
+        <a href="{% url 'student_list' %}" class="back-btn">&#8592; Back to Student List</a>
+        <a href="/admindashboard/" class="back-btn">&#8592; Back to Admin Dashboard</a>
+    </div>
+
+    <script>
+        const studentForm = document.getElementById('studentForm');
+        const name = document.getElementById('name');
+        const rollNumber = document.getElementById('roll_number');
+        const grade = document.getElementById('grade');
+        const division = document.getElementById('division');
+        const phone = document.getElementById('phone');
+        const email = document.getElementById('email');
+        const dob = document.getElementById('date_of_birth');
+        const address = document.getElementById('address');
+
+        // Real-time validation
+        name.addEventListener('input', validateName);
+        rollNumber.addEventListener('input', validateRollNumber);
+        grade.addEventListener('change', validateGrade);
+        division.addEventListener('input', validateDivision);
+        phone.addEventListener('input', validatePhone);
+        email.addEventListener('input', validateEmail);
+        dob.addEventListener('change', validateDOB);
+        address.addEventListener('input', validateAddress);
+        const address = document.getElementById('address');
+
+        // Real-time validation
+        name.addEventListener('input', validateName);
+        rollNumber.addEventListener('input', validateRollNumber);
+        grade.addEventListener('change', validateGrade);
+        division.addEventListener('input', validateDivision);
+        email.addEventListener('input', validateEmail);
+        address.addEventListener('input', validateAddress);
+
+        function validateName() {
+            const value = name.value.trim();
+            if (value === '') {
+                showError(name, 'nameError', 'Name is required');
+                return false;
+            } else if (value.length < 3) {
+                showError(name, 'nameError', 'Name must be at least 3 characters');
+                return false;
+            } else if (!/^[a-zA-Z\s]+$/.test(value)) {
+                showError(name, 'nameError', 'Name can only contain letters and spaces');
+                return false;
+            } else {
+                clearError(name, 'nameError');
+                return true;
+            }
+        }
+
+        function validateRollNumber() {
+            const value = rollNumber.value.trim();
+            if (value === '') {
+                showError(rollNumber, 'rollNumberError', 'Roll number is required');
+                return false;
+            } else if (value.length < 2) {
+                showError(rollNumber, 'rollNumberError', 'Roll number must be at least 2 characters');
+                return false;
+            } else {
+                clearError(rollNumber, 'rollNumberError');
+                return true;
+            }
+        }
+
+        function validateGrade() {
+            const value = grade.value;
+            if (value === '') {
+                showError(grade, 'gradeError', 'Please select a grade');
+                return false;
+            } else {
+                clearError(grade, 'gradeError');
+                return true;
+            }
+        }
+
+        function validateDivision() {
+            const value = division.value.trim();
+            if (value === '') {
+                showError(division, 'divisionError', 'Division is required');
+                return false;
+            } else if (!/^[A-Za-z]$/.test(value)) {
+                showError(division, 'divisionError', 'Division must be a single letter (e.g., A, B, C)');
+                return false;
+            } else {
+                clearError(division, 'divisionError');
+                return true;
+            }
+        }
+
+        function validatePhone() {
+            const value = phone.value.trim();
+            if (value !== '' && !/^[0-9]{10}$/.test(value)) {
+                showError(phone, 'phoneError', 'Phone number must be exactly 10 digits');
+                return false;
+            } else {
+                clearError(phone, 'phoneError');
+                return true;
+            }
+        }
+
+        function validateEmail() {
+            const value = email.value.trim();
+            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (value !== '' && !emailPattern.test(value)) {
+                showError(email, 'emailError', 'Please enter a valid email address');
+                return false;
+            } else {
+                clearError(email, 'emailError');
+                return true;
+            }
+        }
+
+        function validateDOB() {
+            const value = dob.value;
+            if (value !== '') {
+                const selectedDate = new Date(value);
+                const today = new Date();
+                const age = today.getFullYear() - selectedDate.getFullYear();
+                
+                if (selectedDate > today) {
+                    showError(dob, 'dobError', 'Date of birth cannot be in the future');
+                    return false;
+                } else if (age < 3) {
+                    showError(dob, 'dobError', 'Student must be at least 3 years old');
+                    return false;
+                } else if (age > 100) {
+                    showError(dob, 'dobError', 'Please enter a valid date of birth');
+                    return false;
+                } else {
+                    clearError(dob, 'dobError');
+                    return true;
+                }
+            }
+            return true;
+        }
+
+        function validateAddress() {
+            const value = address.value.trim();
+            if (value === '') {
+                showError(address, 'addressError', 'Address is required');
+                return false;
+            } else if (value.length < 10) {
+                showError(address, 'addressError', 'Address must be at least 10 characters');
+                return false;
+            } else {
+                clearError(address, 'addressError');
+                return true;
+            }
+        }
+
+        function showError(input, errorId, message) {
+            input.classList.add('error');
+            const errorElement = document.getElementById(errorId);
+            errorElement.textContent = message;
+            errorElement.classList.add('show');
+        }
+
+        function clearError(input, errorId) {
+            input.classList.remove('error');
+            const errorElement = document.getElementById(errorId);
+            errorElement.textContent = '';
+            errorElement.classList.remove('show');
+        }
+
+        // Form submission validation
+        studentForm.addEventListener('submit', function(e) {
+            const isNameValid = validateName();
+            const isRollNumberValid = validateRollNumber();
+            const isGradeValid = validateGrade();
+            const isDivisionValid = validateDivision();
+            const isPhoneValid = validatePhone();
+            const isEmailValid = validateEmail();
+            const isDOBValid = validateDOB();
+            const isAddressValid = validateAddress();
+
+            if (!isNameValid || !isRollNumberValid || !isGradeValid || !isDivisionValid || 
+                !isPhoneValid || !isEmailValid || !isDOBValid || !isAddressValid) {
+                e.preventDefault();
+                alert('Please fix all errors before submitting');
+            }
+        });
+    </script>
+</body>
+</html>

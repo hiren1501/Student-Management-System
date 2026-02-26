@@ -1,0 +1,27 @@
+
+<html>
+<head>
+    <title>Delete Student</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #f4f4f4; margin: 0; padding: 0; }
+        .container { max-width: 400px; margin: 60px auto; background: #fff; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); padding: 32px; text-align: center; }
+        h2 { color: #c0392b; margin-bottom: 18px; }
+        p { margin-bottom: 24px; color: #333; }
+        .btn { background: #c0392b; color: #fff; border: none; border-radius: 4px; padding: 10px 24px; font-size: 1rem; cursor: pointer; margin-right: 10px; }
+        .btn-cancel { background: #7f8c8d; }
+        .back-btn { display: block; margin-top: 24px; color: #2980b9; text-decoration: none; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Delete Student</h2>
+    <p>Are you sure you want to delete <strong>{{ student.name }}</strong> ({{ student.roll_number }})?</p>
+        <form method="post">
+            {% csrf_token %}
+            <input type="submit" value="Confirm" class="btn">
+            <a href="{% url 'student_list' %}" class="btn btn-cancel">Cancel</a>
+        </form>
+        <a href="/admindashboard/" class="back-btn">&#8592; Back to Admin Dashboard</a>
+    </div>
+</body>
+</html>
